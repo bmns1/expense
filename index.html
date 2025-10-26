@@ -4,1035 +4,990 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SVA Reimbursement Portal</title>
+    <!-- Google Sign-In -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
     <script src="https://unpkg.com/phosphor-icons"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc; /* slate-50 */
         }
-        /* Custom message modal styles */
-        #message-modal {
-            transition: opacity 0.3s ease-in-out;
+        .tab-btn {
+            @apply -mb-px border-b-2 border-transparent px-4 py-3 text-sm font-medium text-slate-500 hover:border-slate-300 hover:text-slate-700;
         }
-        .form-section {
+        .tab-btn.tab-active {
+            @apply border-teal-600 text-teal-700;
+        }
+        .tab-content {
             display: none;
         }
-        .tab-btn {
-            border-bottom: 3px solid transparent;
+        .tab-content-active {
+            display: block;
         }
-        .tab-active {
-            border-bottom-color: #0d9488; /* teal-600 */
-            color: #0d9488; /* teal-600 */
-            font-weight: 600;
+        /* Custom styles for file input */
+        input[type="file"]::file-selector-button {
+            @apply mr-3 inline-flex items-center rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-100;
         }
-        .tab-content { display: none; }
-        .tab-content-active { display: block; }
     </style>
 </head>
-<body class="antialiased text-slate-800">
+<body class="antialiased text-slate-900">
 
     <!-- Header -->
     <header class="bg-white shadow-sm sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
+                <!-- Logo and Title -->
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <img src="https://raw.githubusercontent.com/bmns1/parent-portal/main/logo.png" alt="SVA Logo" class="h-12 w-auto">
                     </div>
                     <div class="ml-4">
-                        <h1 class="text-2xl font-bold text-slate-900">Silicon Valley Academy</h1>
-                        <p class="text-sm text-slate-500">Reimbursement & Expense Portal</p>
+                        <h1 class="text-xl font-bold text-slate-900">SVA Reimbursement Portal</h1>
+                        <p class="text-sm text-slate-500">Silicon Valley Academy</p>
                     </div>
                 </div>
-                <div id="auth-container" class="flex items-center space-x-2">
-                    <!-- This will be populated by JS -->
+                <!-- Login/User Info -->
+                <div id="auth-container">
+                    <!-- This container will be populated by Google Sign-In -->
                 </div>
             </div>
         </div>
-        <!-- Tab Navigation -->
-        <nav id="portal-nav" class="bg-white border-b border-slate-200">
+        <!-- Navigation Tabs -->
+        <nav class="bg-white border-b border-slate-200">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div id="main-nav" class="flex justify-start -mb-px space-x-6">
-                    <button class="tab-btn tab-active text-slate-600 hover:text-teal-600 py-3 px-1 block focus:outline-none text-sm font-medium" data-tab="new-request"><i class="ph-plus-circle mr-2"></i>New Request</button>
-                    <button class="tab-btn text-slate-600 hover:text-teal-600 py-3 px-1 block focus:outline-none text-sm font-medium" data-tab="status-check"><i class="ph-magnifying-glass mr-2"></i>Check Status</button>
-                    <button id="approvals-tab-btn" class="tab-btn text-slate-600 hover:text-teal-600 py-3 px-1 block focus:outline-none text-sm font-medium hidden" data-tab="approvals"><i class="ph-gavel mr-2"></i>My Pending Approvals</button>
-                    <button id="admin-tab-btn" class="tab-btn text-slate-600 hover:text-teal-600 py-3 px-1 block focus:outline-none text-sm font-medium hidden" data-tab="admin"><i class="ph-bank mr-2"></i>Admin Dashboard</button>
+                <div class="flex">
+                    <button class="tab-btn tab-active" data-tab="new-request">
+                        <i class="ph-plus-circle mr-1.5 align-middle text-base"></i>New Request
+                    </button>
+                    <!-- These tabs are hidden by default and shown on login -->
+                    <button class="tab-btn hidden" data-tab="approvals" id="approvals-tab">
+                        <i class="ph-list-checks mr-1.5 align-middle text-base"></i>My Pending Approvals
+                    </button>
+                    <button class="tab-btn hidden" data-tab="admin" id="admin-tab">
+                        <i class="ph-bank mr-1.5 align-middle text-base"></i>Admin Dashboard
+                    </button>
                 </div>
             </div>
         </nav>
     </header>
 
-    <!-- Loading Overlay -->
-    <div id="loading-overlay" class="fixed inset-0 bg-slate-900 bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="text-center">
-            <i class="ph-spinner-gap text-6xl text-white mx-auto animate-spin"></i>
-            <h2 id="loading-message" class="text-2xl font-semibold text-white mt-4">Loading...</h2>
-        </div>
-    </div>
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-8 sm:py-10 px-4 sm:px-6 lg:px-8">
 
-    <!-- Message Modal -->
-    <div id="message-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4 hidden" style="opacity: 0;">
-        <div id="message-modal-card" class="bg-white rounded-xl shadow-2xl max-w-sm w-full p-6 text-center transform scale-95 transition-all">
-            <i id="message-icon" class="ph-check-circle text-6xl text-green-500 mx-auto"></i>
-            <h3 id="message-title" class="text-2xl font-bold text-slate-900 mt-4">Success!</h3>
-            <p id="message-body" class="text-slate-600 mt-2">Your request has been submitted.</p>
-            <button id="message-close-btn" class="w-full bg-teal-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-teal-700 transition mt-6">
+        <!-- =================================== -->
+        <!-- VIEW 1: New Request (Default)       -->
+        <!-- =================================== -->
+        <div id="new-request" class="tab-content tab-content-active">
+            <div class="max-w-3xl mx-auto bg-white p-6 sm:p-8 rounded-xl shadow-lg border border-slate-200">
+                <form id="expense-form" class="space-y-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900">New Expense Request</h2>
+                        <p class="mt-1 text-sm text-slate-600">Submit a reimbursement or pre-approval request. Please fill out all fields.</p>
+                    </div>
+
+                    <!-- Submitter Details -->
+                    <div class="border-b border-slate-200 pb-6 space-y-4">
+                        <h3 class="text-lg font-semibold text-slate-800">1. Submitter Details</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="submitter-name" class="block text-sm font-medium text-slate-700">Full Name</label>
+                                <input type="text" id="submitter-name" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500" required>
+                            </div>
+                            <div>
+                                <label for="submitter-email" class="block text-sm font-medium text-slate-700">Email Address</label>
+                                <input type="email" id="submitter-email" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="submitter-role" class="block text-sm font-medium text-slate-700">Role at SVA (e.g., "Parent", "Teacher", "Admin")</label>
+                            <input type="text" id="submitter-role" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500" required>
+                        </div>
+                    </div>
+                    
+                    <!-- Expense Details -->
+                    <div class="border-b border-slate-200 pb-6 space-y-4">
+                        <h3 class="text-lg font-semibold text-slate-800">2. Expense Details</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="category" class="block text-sm font-medium text-slate-700">Category</label>
+                                <select id="category" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500" required>
+                                    <option value="">Loading categories...</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="amount" class="block text-sm font-medium text-slate-700">Total Amount ($)</label>
+                                <input type="number" id="amount" step="0.01" min="0.01" placeholder="e.g., 150.75" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500" required>
+                            </div>
+                        </div>
+                         <!-- Dynamic Tier Info Box -->
+                        <div id="tier-info-box" class="hidden p-4 rounded-lg bg-slate-50 border border-slate-200">
+                            <h4 class="font-semibold text-slate-800 flex items-center">
+                                <i class="ph-info mr-2 text-blue-500"></i>
+                                <span id="tier-title">Tier 1 Request</span>
+                            </h4>
+                            <p id="tier-description" class="text-sm text-slate-600 mt-1"></p>
+                        </div>
+                        <!-- Amount Too High Error Box -->
+                        <div id="amount-too-high" class="hidden p-4 rounded-lg bg-red-50 border border-red-300">
+                            <h4 class="font-semibold text-red-800 flex items-center">
+                                <i class="ph-x-circle mr-2"></i>Amount Exceeds Portal Limit
+                            </h4>
+                            <p id="amount-too-high-desc" class="text-sm text-red-700 mt-1"></p>
+                        </div>
+                    </div>
+                    
+                    <!-- Request Type & Vendor -->
+                    <div class="border-b border-slate-200 pb-6 space-y-4">
+                        <h3 class="text-lg font-semibold text-slate-800">3. Request & Vendor</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="request-type" class="block text-sm font-medium text-slate-700">Request Type</label>
+                                <select id="request-type" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500" required>
+                                    <option value="">Select a type...</option>
+                                    <option value="reimbursement">Reimbursement (Paid, need money back)</option>
+                                    <option value="pre-approval">Pre-Approval (Not yet paid)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="vendor" class="block text-sm font-medium text-slate-700">Vendor / Store Name</label>
+                                <input type="text" id="vendor" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="payment-method" class="block text-sm font-medium text-slate-700">Payment Method</label>
+                            <select id="payment-method" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500" required>
+                                <option value="">Select a method...</option>
+                                <option value="Personal Account">Personal Account (Check Reimbursement)</option>
+                                <option value="School Account">School Account (Direct Payment/P-Card)</option>
+                            </select>
+                            <p id="payment-method-warning" class="text-sm text-red-600 mt-1 hidden"></p>
+                        </div>
+                        <div>
+                            <label for="description" class="block text-sm font-medium text-slate-700">Brief Description & Justification</label>
+                            <textarea id="description" rows="3" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500" placeholder="e.g., Art supplies for 3rd grade PTO event..." required></textarea>
+                        </div>
+                    </div>
+
+                    <!-- File Uploads -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-semibold text-slate-800">4. File Uploads</h3>
+                        <!-- Quote / Invoice (For Pre-Approval) -->
+                        <div id="quote-upload-section">
+                            <label for="quote" class="block text-sm font-medium text-slate-700">Quote or Invoice <span class="text-slate-500">(Required for Pre-Approval)</span></label>
+                            <input type="file" id="quote" class="mt-1 block w-full text-sm text-slate-600">
+                        </div>
+                        <!-- Receipt (For Reimbursement) -->
+                        <div id="receipt-upload-section">
+                            <label for="receipt" class="block text-sm font-medium text-slate-700">Receipt <span class="text-slate-500">(Required for Reimbursement)</span></label>
+                            <input type="file" id="receipt" class="mt-1 block w-full text-sm text-slate-600">
+                        </div>
+                        <!-- Pre-Approval Proof (For Tiers 2 & 3 Reimbursement) -->
+                        <div id="pre-approval-upload-section" class="hidden">
+                            <label for="pre-approval" class="block text-sm font-medium text-slate-700">Proof of Pre-Approval <span class="font-bold text-red-600">(Required)</span></label>
+                            <p class="text-xs text-slate-500 mb-1">Please upload the email or document showing you received approval before this purchase.</p>
+                            <input type="file" id="pre-approval" class="mt-1 block w-full text-sm text-slate-600">
+                        </div>
+                    </div>
+                    
+                    <!-- Submission -->
+                    <div class="border-t border-slate-200 pt-6">
+                        <button type="submit" id="submit-btn" class="w-full flex items-center justify-center text-lg bg-teal-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-teal-700 transition shadow-sm disabled:bg-slate-400">
+                            <i class="ph-paper-plane-tilt mr-2"></i>
+                            <span id="submit-btn-text">Submit Request</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- =================================== -->
+        <!-- VIEW 2: My Pending Approvals        -->
+        <!-- =================================== -->
+        <div id="approvals" class="tab-content">
+            <h2 class="text-3xl font-bold text-slate-900 mb-6">My Pending Approvals</h2>
+            <div id="approvals-list" class="space-y-6">
+                <!-- Approval cards will be rendered here by JS -->
+            </div>
+             <!-- Modal for Approve/Reject -->
+            <div id="approval-modal" class="hidden fixed inset-0 bg-slate-600 bg-opacity-75 flex items-center justify-center z-50 p-4">
+                <div class="bg-white rounded-lg shadow-xl max-w-lg w-full p-6">
+                    <h3 class="text-xl font-bold text-slate-900" id="modal-title">Take Action</h3>
+                    <p class="text-sm text-slate-500" id="modal-subtitle">For Request ID: <span class="font-medium" id="modal-request-id"></span></p>
+                    <div class="mt-4">
+                        <label for="modal-comments" class="block text-sm font-medium text-slate-700">Comments (Required for Rejection)</label>
+                        <textarea id="modal-comments" rows="3" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500" placeholder="e.g., Approved, but please use vendor X next time."></textarea>
+                    </div>
+                    <div class="mt-6 flex flex-col sm:flex-row-reverse gap-3">
+                        <button id="modal-submit-btn" class="w-full sm:w-auto inline-flex justify-center rounded-lg border border-transparent bg-teal-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-teal-700">
+                            Submit Decision
+                        </button>
+                         <button id="modal-cancel-btn" type="button" class="w-full sm:w-auto inline-flex justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-base font-medium text-slate-700 shadow-sm hover:bg-slate-50">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- =================================== -->
+        <!-- VIEW 3: Admin Dashboard             -->
+        <!-- =================================== -->
+        <div id="admin" class="tab-content">
+            <h2 class="text-3xl font-bold text-slate-900 mb-6">Admin: Issue Payments</h2>
+            <div class="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
+                <div class="p-4 sm:p-6">
+                    <h3 class="text-lg font-semibold text-slate-800">Approved, Awaiting Payment</h3>
+                    <p class="text-sm text-slate-500 mt-1">These requests have been fully approved and are ready for payment to be issued.</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-slate-200">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Submitter</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Details</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Payment Method</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-tasks-list" class="bg-white divide-y divide-slate-200">
+                            <!-- Admin tasks will be rendered here by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+             <!-- Modal for Issuing Check -->
+            <div id="issue-check-modal" class="hidden fixed inset-0 bg-slate-600 bg-opacity-75 flex items-center justify-center z-50 p-4">
+                <div class="bg-white rounded-lg shadow-xl max-w-lg w-full p-6">
+                    <h3 class="text-xl font-bold text-slate-900">Issue Payment</h3>
+                    <p class="text-sm text-slate-500" id="issue-modal-subtitle">For Request ID: <span class="font-medium" id="issue-modal-request-id"></span></p>
+                    <div class="mt-4">
+                        <label for="issue-modal-check-number" class="block text-sm font-medium text-slate-700">Check # or Transaction ID (Optional)</label>
+                        <input type="text" id="issue-modal-check-number" class="mt-1 block w-full rounded-lg border-slate-300 shadow-sm focus:border-teal-500 focus:ring-teal-500" placeholder="e.g., 45102">
+                    </div>
+                    <div class="mt-6 flex flex-col sm:flex-row-reverse gap-3">
+                        <button id="issue-modal-submit-btn" class="w-full sm:w-auto inline-flex justify-center rounded-lg border border-transparent bg-teal-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-teal-700">
+                            Mark as "Check Issued"
+                        </button>
+                         <button id="issue-modal-cancel-btn" type="button" class="w-full sm:w-auto inline-flex justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-base font-medium text-slate-700 shadow-sm hover:bg-slate-50">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Global Message/Error Overlay -->
+    <div id="message-overlay" class="hidden fixed inset-0 bg-slate-900 bg-opacity-75 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6 text-center">
+            <div id="message-icon" class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                <!-- Icon (e.g., check or x) will be inserted here -->
+            </div>
+            <h3 class="text-xl font-bold text-slate-900 mt-4" id="message-title">Error</h3>
+            <p class="text-slate-600 mt-2" id="message-text">Something went wrong.</p>
+            <button id="message-close-btn" class="mt-6 w-full inline-flex justify-center rounded-lg border border-transparent bg-teal-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-teal-700">
                 Close
             </button>
         </div>
     </div>
 
-    <!-- ===== PORTAL CONTAINER (Visible by default) ===== -->
-    <div id="portal-container">
-        <main class="max-w-7xl mx-auto py-8 sm:py-10 px-4 sm:px-6 lg:px-8">
-
-            <!-- ===== TAB 1: SUBMISSION FORM ===== -->
-            <div id="new-request" class="tab-content tab-content-active">
-                <form id="reimbursement-form" class="bg-white p-6 sm:p-8 rounded-xl shadow-lg border border-slate-200 max-w-3xl mx-auto">
-                    <h2 class="text-3xl font-bold text-slate-900 mb-6 border-b pb-4">New Expense Request</h2>
-                    
-                    <!-- Section 1: Submitter Info (Editable) -->
-                    <div class="space-y-4">
-                        <h3 class="text-lg font-semibold text-slate-800">1. Submitter Information</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label for="submitter-name" class="block text-sm font-medium text-slate-700">Full Name</label>
-                                <input type="text" id="submitter-name" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm" required>
-                            </div>
-                            <div>
-                                <label for="submitter-email" class="block text-sm font-medium text-slate-700">Email Address</label>
-                                <input type="email" id="submitter-email" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm" required>
-                            </div>
-                        </div>
-                        <div>
-                            <label for="submitter-role" class="block text-sm font-medium text-slate-700">Your Role</label>
-                            <select id="submitter-role" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm" required>
-                                <option value="">Select your role...</option>
-                                <option value="Teacher">Teacher</option>
-                                <option value="Staff">Staff</option>
-                                <option value="PTO">PTO</option>
-                                <option value="Board Member">Board Member</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Section 2: Expense Basics -->
-                    <div class="mt-6 pt-6 border-t border-slate-200 space-y-4">
-                        <h3 class="text-lg font-semibold text-slate-800">2. Expense Basics</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label for="expense-category" class="block text-sm font-medium text-slate-700">Expense Category</label>
-                                <select id="expense-category" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm" required>
-                                    <option value="">Loading categories...</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="expense-amount" class="block text-sm font-medium text-slate-700">Estimated Amount ($)</label>
-                                <input type="number" id="expense-amount" min="0" step="0.01" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm" placeholder="e.g., 250.00" required>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Section 3: Dynamic Guidance -->
-                    <div id="guidance-section" class="form-section mt-6 pt-6 border-t border-slate-200">
-                        <h3 class="text-lg font-semibold text-slate-800">3. Policy & Guidance</h3>
-                        <div id="guidance-box" class="mt-2 p-4 rounded-lg border">
-                            <!-- Content injected by JavaScript -->
-                        </div>
-                    </div>
-
-                    <!-- Section 4: Details & Submission -->
-                    <div id="details-section" class="form-section mt-6 pt-6 border-t border-slate-200 space-y-4">
-                        <h3 class="text-lg font-semibold text-slate-800">4. Expense Details</h3>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700">Request Type</label>
-                            <div id="request-type-container" class="mt-2 flex space-x-4">
-                                <label class="inline-flex items-center">
-                                    <input type="radio" class="form-radio text-teal-600" name="request-type" value="pre-approval" required>
-                                    <span class="ml-2">Request Pre-Approval (with Quote)</span>
-                                </label>
-                                <label class="inline-flex items-center">
-                                    <input type="radio" class="form-radio text-teal-600" name="request-type" value="reimbursement">
-                                    <span class="ml-2">Submit for Reimbursement (with Receipt)</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div id="payment-method-container" class="form-section">
-                            <label for="payment-method" class="block text-sm font-medium text-slate-700">Payment Method Used/Requested</label>
-                            <select id="payment-method" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm">
-                                <option value="Personal">Personal Funds (Reimbursement)</option>
-                                <option value="School">School Account (Direct Payment)</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="vendor-name" class="block text-sm font-medium text-slate-700">Vendor / Store Name</label>
-                            <input type="text" id="vendor-name" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm" required>
-                        </div>
-
-                        <div>
-                            <label for="expense-description" class="block text-sm font-medium text-slate-700">Business Purpose / Description</label>
-                            <textarea id="expense-description" rows="3" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm" placeholder="What is this for? How does it benefit the school?" required></textarea>
-                        </div>
-
-                        <div id="quote-upload-container" class="form-section">
-                            <label for="file-quote" class="block text-sm font-medium text-slate-700">Upload Quote</label>
-                            <input type="file" id="file-quote" class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100">
-                        </div>
-                        <div id="receipt-upload-container" class="form-section">
-                            <label for="file-receipt" class="block text-sm font-medium text-slate-700">Upload Receipt / Invoice</label>
-                            <input type="file" id="file-receipt" class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100">
-                        </div>
-
-                        <div id="pre-approval-upload-container" class="form-section">
-                            <label for="file-pre-approval" class="block text-sm font-medium text-slate-700">Upload Proof of Pre-Approval (Email, etc.)</label>
-                            <input type="file" id="file-pre-approval" class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100">
-                        </div>
-
-                    </div>
-                    
-                    <!-- Section 5: Submit -->
-                    <div id="submit-section" class="form-section mt-8 pt-6 border-t border-slate-200">
-                        <div id="form-error-box" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4">
-                            <!-- Error message injected by JavaScript -->
-                        </div>
-                        <button type="submit" id="submit-btn" class="w-full flex items-center justify-center bg-teal-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-teal-700 transition shadow-md">
-                            <i class="ph-paper-plane-tilt mr-2"></i> Submit Request
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- ===== TAB 2: CHECK STATUS ===== -->
-            <div id="status-check" class="tab-content">
-                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg border border-slate-200 max-w-3xl mx-auto">
-                    <h2 class="text-3xl font-bold text-slate-900 mb-6">Check Request Status</h2>
-                    
-                    <form id="status-check-form" class="flex space-x-2">
-                        <input type="text" id="status-request-id" class="block w-full rounded-md border-slate-300 shadow-sm" placeholder="Enter your Request ID (e.g., REQ-12345)" required>
-                        <button type="submit" class="bg-teal-600 text-white font-semibold py-2 px-5 rounded-lg hover:bg-teal-700 transition">Check</button>
-                    </form>
-
-                    <div id="status-results-container" class="hidden mt-6 pt-6 border-t border-slate-200">
-                        <!-- Status results loaded here -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- ===== TAB 3: MY PENDING APPROVALS ===== -->
-            <div id="approvals" class="tab-content">
-                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg border border-slate-200 max-w-5xl mx-auto">
-                    <h2 class="text-3xl font-bold text-slate-900 mb-6">My Pending Approvals</h2>
-                    <div id="approvals-container" class="space-y-6">
-                        <!-- Approval items will be rendered here -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- ===== TAB 4: ADMIN DASHBOARD ===== -->
-            <div id="admin" class="tab-content">
-                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg border border-slate-200 max-w-5xl mx-auto">
-                    <h2 class="text-3xl font-bold text-slate-900 mb-6">Admin Dashboard: Issue Checks</h2>
-                    <p class="text-slate-600 mb-6">This list shows all fully approved requests that are ready for a check to be issued.</p>
-                    <div id="admin-container" class="space-y-4">
-                        <!-- Admin tasks will be rendered here -->
-                    </div>
-                </div>
-            </div>
-
-        </main>
-    </div>
-
-    <footer class="bg-white mt-12 border-t border-slate-200">
-        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-slate-500 text-sm">
-            <p>&copy; 2025 SVA Expense Portal. For technical issues, contact <a href="mailto:support@svaschool.org" class="font-medium text-teal-600 hover:underline">support@svaschool.org</a>.</p>
-        </div>
-    </footer>
 
     <script>
         // --- CONFIGURATION ---
         const CLIENT_ID = "14216824305-v19ecsmrhk1muaglrlhjceqjk5oeqr4n.apps.googleusercontent.com";
         const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzD0IJtgmaKSEXu45UiPdQBMSOgLM4vUPlLHBszKpoidTy1AveJS_rF_z7KK1H9RYe8bg/exec';
         
-        // Tier limits (from CSV)
+        // Tier limits (will be fetched from backend)
         let TIER_1_MAX = 200;
         let TIER_2_MAX = 1000;
         let TIER_3_MAX = 5000;
-        
+
         // Global state
-        let ID_TOKEN = null;
-        let USER_PROFILE = { isAdmin: false };
-        let currentTier = 0;
-        let appCategories = [];
+        let CURRENT_USER_TOKEN = null;
+        let CURRENT_USER_EMAIL = null;
+        let IS_ADMIN = false;
 
-        // --- DOM Elements ---
-        const portalContainer = document.getElementById('portal-container');
-        const authContainer = document.getElementById('auth-container');
-        const portalNav = document.getElementById('portal-nav');
-
-        const guidanceSection = document.getElementById('guidance-section');
-        const guidanceBox = document.getElementById('guidance-box');
-        const detailsSection = document.getElementById('details-section');
-        const submitSection = document.getElementById('submit-section');
-        const formErrorBox = document.getElementById('form-error-box');
+        // Store data from backend
+        let myApprovals = [];
+        let adminTasks = [];
         
-        const amountInput = document.getElementById('expense-amount');
-        const categorySelect = document.getElementById('expense-category');
-        const requestTypeContainer = document.getElementById('request-type-container');
-        const paymentMethodContainer = document.getElementById('payment-method-container');
-        const paymentMethodSelect = document.getElementById('payment-method');
-        const quoteUploadContainer = document.getElementById('quote-upload-container');
-        const receiptUploadContainer = document.getElementById('receipt-upload-container');
-        const preApprovalUploadContainer = document.getElementById('pre-approval-upload-container');
-        
-        const approvalsTab = document.getElementById('approvals-tab-btn');
-        const adminTab = document.getElementById('admin-tab-btn');
-
         // --- INITIALIZATION ---
-        window.onload = () => {
-            // Render the "Sign In" button by default
-            authContainer.innerHTML = '<div id="google-signin-button-container" class="flex justify-center"></div>';
+        window.onload = function() {
+            // 1. Initialize Google Sign-In
+            google.accounts.id.initialize({
+                client_id: CLIENT_ID,
+                callback: gsiCallback,
+                auto_select: true
+            });
             
-            try {
-                google.accounts.id.initialize({
-                  client_id: CLIENT_ID,
-                  callback: handleLoginSuccess
-                });
-                google.accounts.id.renderButton(
-                  document.getElementById('google-signin-button-container'),
-                  { theme: "outline", size: "large", text: "Approver Sign In" } 
-                );
-            } catch (error) {
-                console.error("Google Sign-In initialization failed:", error);
-                authContainer.innerHTML = `<p class="text-red-600">Login Error</p>`;
-            }
+            // 2. Render the "Sign In with Google" button
+            google.accounts.id.renderButton(
+                document.getElementById('auth-container'),
+                { theme: "outline", size: "large", text: "sign_in_with" } 
+            );
 
-            handlePublicView(); // Load public data
-            addGlobalEventListeners();
+            // 3. Fetch public data (categories, tiers) for the submission form
+            fetchPublicData();
+
+            // 4. Add all global event listeners
+            addEventListeners();
         };
 
-        function addGlobalEventListeners() {
-            // Main Form Logic
-            amountInput.addEventListener('input', updateGuidanceAndForm);
-            document.querySelectorAll('input[name="request-type"]').forEach(radio => {
-                radio.addEventListener('change', updateGuidanceAndForm);
-            });
-            document.getElementById('reimbursement-form').addEventListener('submit', submitExpenseForm);
-            
-            // Modal Close
-            document.getElementById('message-close-btn').addEventListener('click', hideMessage);
+        // --- GOOGLE AUTHENTICATION ---
+        function gsiCallback(response) {
+            CURRENT_USER_TOKEN = response.credential;
+            const payload = JSON.parse(atob(CURRENT_USER_TOKEN.split('.')[1]));
+            CURRENT_USER_EMAIL = payload.email;
 
-            // Tab Navigation
-            document.getElementById('main-nav').addEventListener('click', (e) => {
-                if (e.target.matches('.tab-btn')) {
-                    const tabName = e.target.dataset.tab;
-                    switchToTab(tabName);
-                }
-            });
-
-            // Status Check
-            document.getElementById('status-check-form').addEventListener('submit', handleStatusCheck);
-        }
-        
-        function switchToTab(tabName) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('tab-active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('tab-content-active'));
-            document.querySelector(`.tab-btn[data-tab="${tabName}"]`).classList.add('tab-active');
-            document.getElementById(tabName).classList.add('tab-content-active');
-        }
-
-        // --- PUBLIC VIEW ---
-        function handlePublicView() {
-            // Fetch public data like categories and tier limits
-            fetchPublicData();
-        }
-
-        async function fetchPublicData() {
-            // MOCK: Simulate fetching public data
-            await new Promise(resolve => setTimeout(resolve, 100));
-            const mockResponse = {
-                status: 'success',
-                tierLimits: { tier1: 200, tier2: 1000, tier3: 5000 },
-                categories: ["PTO", "Classroom Supplies", "Facilities", "Special Events", "Guest Speaker", "Other"]
-            };
-            
-            if (mockResponse.status === 'success') {
-                TIER_1_MAX = mockResponse.tierLimits.tier1;
-                TIER_2_MAX = mockResponse.tierLimits.tier2;
-                TIER_3_MAX = mockResponse.tierLimits.tier3;
-                appCategories = mockResponse.categories;
-                renderCategories(appCategories);
-            } else {
-                showMessage('Error', 'Could not load portal configuration.', 'error');
-            }
-            
-            /*
-            // REAL FETCH LOGIC
-            try {
-                const response = await fetch(`${WEB_APP_URL}?action=getPublicData`);
-                const data = await response.json();
-                
-                if (data.status === 'success') {
-                    TIER_1_MAX = data.tierLimits.tier1;
-                    TIER_2_MAX = data.tierLimits.tier2;
-                    TIER_3_MAX = data.tierLimits.tier3;
-                    appCategories = data.categories;
-                    renderCategories(appCategories);
-                } else {
-                    showMessage('Error', data.message, 'error');
-                }
-            } catch (err) {
-                showMessage('Error', 'Could not connect to the server.', 'error');
-            }
-            */
-        }
-        
-        function renderCategories(categories) {
-            categorySelect.innerHTML = '<option value="">Select a category...</option>';
-            categories.forEach(cat => {
-                categorySelect.innerHTML += `<option value="${cat}">${cat}</option>`;
-            });
-        }
-
-        // --- AUTHENTICATION ---
-        function handleLoginSuccess(response) {
-            ID_TOKEN = response.credential;
-            USER_PROFILE = JSON.parse(atob(ID_TOKEN.split('.')[1]));
-            
-            // Update header
-            authContainer.innerHTML = `
+            // Update UI to show user info and Sign Out
+            document.getElementById('auth-container').innerHTML = `
                 <div class="flex items-center">
-                    <img class="h-8 w-8 rounded-full" src="${USER_PROFILE.picture}" alt="Profile">
-                    <div class="ml-3 mr-4 text-right">
-                        <div class="text-sm font-medium text-slate-800">${USER_PROFILE.name}</div>
-                        <div class="text-xs font-medium text-slate-500">${USER_PROFILE.email}</div>
+                    <div class="text-right mr-3">
+                        <div class="text-sm font-medium text-slate-800">${payload.name}</div>
+                        <div class="text-xs text-slate-500">${payload.email}</div>
                     </div>
-                    <button onclick="signOut();" class="text-sm font-medium text-slate-700 bg-slate-200 hover:bg-slate-300 px-4 py-2 rounded-lg">Sign Out</button>
+                    <img src="${payload.picture}" alt="Profile" class="h-10 w-10 rounded-full">
+                    <button onclick="signOut()" class="ml-4 text-sm font-medium text-slate-600 hover:text-teal-600">Sign Out</button>
                 </div>
             `;
-            
-            // Fetch all user-specific data
+
+            // Fetch secure data for this user
             fetchApproverData();
         }
 
         function signOut() {
-            google.accounts.id.disableAutoSelect();
-            ID_TOKEN = null;
-            USER_PROFILE = { isAdmin: false };
+            CURRENT_USER_TOKEN = null;
+            CURRENT_USER_EMAIL = null;
+            IS_ADMIN = false;
             
-            // Reset header
-            authContainer.innerHTML = '<div id="google-signin-button-container" class="flex justify-center"></div>';
-            google.accounts.id.renderButton(
-              document.getElementById('google-signin-button-container'),
-              { theme: "outline", size: "large", text: "Approver Sign In" } 
+            // Clear Google's internal session
+            google.accounts.id.disableAutoSelect();
+
+            // Reset UI
+            document.getElementById('auth-container').innerHTML = ''; // Clear user info
+             google.accounts.id.renderButton( // Re-render sign-in button
+                document.getElementById('auth-container'),
+                { theme: "outline", size: "large", text: "sign_in_with" } 
             );
             
-            // Hide approver tabs
-            approvalsTab.classList.add('hidden');
-            adminTab.classList.add('hidden');
-            
-            // Reset to default tab
-            switchToTab('new-request');
+            // Hide secure tabs and switch to default
+            document.getElementById('approvals-tab').classList.add('hidden');
+            document.getElementById('admin-tab').classList.add('hidden');
+            showView('new-request');
+
+            // Clear secure data
+            myApprovals = [];
+            adminTasks = [];
+            renderApprovals();
+            renderAdminTasks();
         }
 
-        // --- APPROVER DATA ---
-        async function fetchApproverData() {
-            showLoading('Loading your dashboard...');
-            
-            // MOCK: Simulate fetching all data from backend
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            const mockResponse = {
-                status: 'success',
-                isAdmin: USER_PROFILE.email.endsWith('@svaschool.org'), // Mock admin logic
-                myApprovals: [
-                    { id: 'REQ-50001', submitter: 'Test Teacher', date: '2025-10-24', submission_date: '2025-10-24T10:00:00Z', description: 'Guest Speaker Fee', amount: 300.00, tier: 2, status: 'Pending Admin Approval', deadline: '2025-10-29' },
-                    { id: 'REQ-50002', submitter: 'Board Member', date: '2025-10-20', submission_date: '2025-10-20T14:00:00Z', description: 'New Laptops for Admin', amount: 2500.00, tier: 3, status: 'Pending Board Approval', deadline: '2025-10-25' }
-                ],
-                adminTasks: [
-                    { id: 'REQ-12345', submitter: 'Test Teacher', date: '2025-10-20', description: 'Classroom Books', amount: 150.00, paymentMethod: 'Personal' },
-                    { id: 'REQ-60001', submitter: 'Other Staff', date: '2025-10-19', description: 'Facilities Repair', amount: 450.00, paymentMethod: 'School' }
-                ]
-            };
-            
-            hideLoading();
+        // --- DATA FETCHING ---
+        function fetchPublicData() {
+            showSpinnerOnButton(document.getElementById('submit-btn'), 'Loading Form...', true);
+            fetch(`${WEB_APP_URL}?action=getPublicData`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Populate categories
+                        const categorySelect = document.getElementById('category');
+                        categorySelect.innerHTML = '<option value="">Select a category...</option>';
+                        data.categories.forEach(cat => {
+                            const option = document.createElement('option');
+                            option.value = cat;
+                            option.textContent = cat;
+                            categorySelect.appendChild(option);
+                        });
 
-            if (mockResponse.status === 'success') {
-                USER_PROFILE.isAdmin = mockResponse.isAdmin;
-                
-                // Render all components
-                renderApprovals(mockResponse.myApprovals);
-                approvalsTab.classList.remove('hidden'); // Show approvals tab
-                
-                if (mockResponse.isAdmin) {
-                    adminTab.classList.remove('hidden');
-                    renderAdminDashboard(mockResponse.adminTasks);
-                } else {
-                    adminTab.classList.add('hidden');
-                }
-                
-                switchToTab('approvals'); // Switch to approvals tab on login
-            } else {
-                showMessage('Error', 'Could not load your dashboard data.', 'error');
-                signOut(); // Log out on error
-            }
-            
-            /*
-            // REAL FETCH LOGIC
-            try {
-                const response = await fetch(`${WEB_APP_URL}?action=getApproverData&token=${ID_TOKEN}`);
-                const data = await response.json();
-                
-                if (data.status === 'success') {
-                    USER_PROFILE.isAdmin = data.isAdmin;
-                    renderApprovals(data.myApprovals);
-                    approvalsTab.classList.remove('hidden');
-                    
-                    if (data.isAdmin) {
-                        adminTab.classList.remove('hidden');
-                        renderAdminDashboard(data.adminTasks);
+                        // Set tier limits
+                        TIER_1_MAX = parseFloat(data.tierLimits.tier1);
+                        TIER_2_MAX = parseFloat(data.tierLimits.tier2);
+                        TIER_3_MAX = parseFloat(data.tierLimits.tier3);
+                        
+                        showSpinnerOnButton(document.getElementById('submit-btn'), 'Submit Request', false);
                     } else {
-                        adminTab.classList.add('hidden');
+                        throw new Error(data.message);
                     }
-                    switchToTab('approvals');
-                } else {
-                    showMessage('Error', data.message, 'error');
-                    signOut();
-                }
-                hideLoading();
-            } catch (err) {
-                hideLoading();
-                showMessage('Error', 'Could not connect to the server.', 'error');
-                signOut();
-            }
-            */
+                })
+                .catch(error => {
+                    console.error('Error fetching public data:', error);
+                    showMessage('Error', `Could not load form data: ${error.message}`, 'error');
+                    showSpinnerOnButton(document.getElementById('submit-btn'), 'Error Loading', true);
+                });
+        }
+
+        function fetchApproverData() {
+            if (!CURRENT_USER_TOKEN) return;
+
+            // Show loading spinners in secure tabs
+            document.getElementById('approvals-list').innerHTML = getSpinnerHtml("Loading your pending approvals...");
+            document.getElementById('admin-tasks-list').innerHTML = `<tr><td colspan="4">${getSpinnerHtml("Loading admin tasks...")}</td></tr>`;
+
+            fetch(`${WEB_APP_URL}?action=getApproverData&token=${CURRENT_USER_TOKEN}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        IS_ADMIN = data.isAdmin;
+                        myApprovals = data.myApprovals || [];
+                        adminTasks = data.adminTasks || [];
+
+                        // Show/Hide tabs based on data
+                        if (myApprovals.length > 0) {
+                            document.getElementById('approvals-tab').classList.remove('hidden');
+                        }
+                        if (IS_ADMIN) {
+                            document.getElementById('admin-tab').classList.remove('hidden');
+                        }
+                        
+                        // Render data
+                        renderApprovals();
+                        renderAdminTasks();
+
+                    } else {
+                        throw new Error(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching approver data:', error);
+                    showMessage('Authentication Error', `Could not load your data. Your session might be invalid. Please try signing out and in again. Error: ${error.message}`, 'error');
+                    // Clear loading spinners
+                    document.getElementById('approvals-list').innerHTML = getEmptyStateHtml("Error loading approvals.");
+                    document.getElementById('admin-tasks-list').innerHTML = `<tr><td colspan="4" class="p-6 text-center text-slate-500">Error loading tasks.</td></tr>`;
+                });
         }
         
-        function renderApprovals(approvals) {
-            const container = document.getElementById('approvals-container');
-            if (!approvals || approvals.length === 0) {
-                container.innerHTML = '<p class="text-slate-500 text-center">You have no pending approvals.</p>';
-                return;
-            }
-            
-            container.innerHTML = approvals.map(req => {
-                const deadlineDate = new Date(req.deadline);
-                const daysUntilDeadline = (deadlineDate - new Date()) / (1000 * 60 * 60 * 24);
-                const isUrgent = daysUntilDeadline < 2;
-
-                const submissionDate = new Date(req.submission_date);
-                const daysPassed = (new Date() - submissionDate) / (1000 * 60 * 60 * 24);
-                
-                // Admin Override Logic
-                let overrideButton = '';
-                if (USER_PROFILE.isAdmin && daysPassed > 5 && (req.status === 'Pending Board Approval' || req.status === 'Pending Admin Approval')) {
-                    overrideButton = `
-                        <button class="w-full flex items-center justify-center bg-orange-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-orange-600 transition mt-2"
-                                onclick="handleApprovalSubmit('${req.id}', 'admin_override', 'Admin Override (5-day rule)')">
-                            <i class="ph-shield-warning mr-2"></i> Admin Override Approval
-                        </button>
-                    `;
-                }
-                
-                return `
-                <div class="border border-slate-200 rounded-lg shadow-sm">
-                    <div class="p-4 bg-slate-50 border-b border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center">
-                        <div>
-                            <p class="font-bold text-lg text-slate-800">${req.description}</p>
-                            <p class="text-sm text-slate-600">Submitted by: ${req.submitter} on ${req.date}</p>
-                            <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-800">${req.status}</span>
-                        </div>
-                        <div class="text-left md:text-right mt-2 md:mt-0">
-                            <p class="text-2xl font-bold text-teal-700">$${req.amount.toFixed(2)}</p>
-                            <p class="text-sm font-medium ${isUrgent ? 'text-red-600' : 'text-slate-500'}">
-                                <i class="ph-timer"></i> Deadline: ${req.deadline}
-                            </p>
-                        </div>
-                    </div>
-                    <div class="p-4 space-y-3">
-                        <textarea id="comments-${req.id}" class="w-full rounded-md border-slate-300 shadow-sm" rows="2" placeholder="Add comments (required if rejecting)"></textarea>
-                        <div class="flex space-x-3">
-                            <button class="w-full flex items-center justify-center bg-red-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 transition"
-                                    onclick="handleApprovalSubmit('${req.id}', 'rejected')">
-                                <i class="ph-x-circle mr-2"></i> Reject
-                            </button>
-                            <button class="w-full flex items-center justify-center bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 transition"
-                                    onclick="handleApprovalSubmit('${req.id}', 'approved')">
-                                <i class="ph-check-circle mr-2"></i> Approve
-                            </button>
-                        </div>
-                        ${overrideButton}
-                    </div>
-                </div>
-                `;
-            }).join('');
-        }
-        
-        function renderAdminDashboard(tasks) {
-            const container = document.getElementById('admin-container');
-            if (!tasks || tasks.length === 0) {
-                container.innerHTML = '<p class="text-slate-500 text-center">No requests are pending payment.</p>';
-                return;
-            }
-            
-            container.innerHTML = tasks.map(task => `
-                <div class="border border-slate-200 rounded-lg p-4 flex flex-col md:flex-row justify-between items-start">
-                    <div>
-                        <p class="text-sm text-slate-500">${task.date} - ${task.id} (Submitter: ${task.submitter})</p>
-                        <p class="font-semibold text-slate-800 mt-1">${task.description}</p>
-                        <p class="text-sm text-slate-600">Amount: <span class="font-bold text-teal-700">$${task.amount.toFixed(2)}</span></p>
-                        <p class="text-sm text-slate-600">Method: <span class="font-medium">${task.paymentMethod}</span></p>
-                    </div>
-                    <div class="mt-3 md:mt-0 md:ml-4 flex-shrink-0">
-                        <input type="text" id="checknum-${task.id}" class="rounded-md border-slate-300 shadow-sm" placeholder="Check # (if applicable)">
-                        <button class="w-full md:w-auto mt-2 block bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition"
-                                onclick="handleCheckIssued('${task.id}')">
-                            <i class="ph-check"></i> Mark as Check Issued
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // --- DYNAMIC FORM LOGIC ---
-        function getTier(amount) {
-            if (amount > 0 && amount <= TIER_1_MAX) return 1;
-            if (amount > TIER_1_MAX && amount <= TIER_2_MAX) return 2;
-            if (amount > TIER_2_MAX && amount <= TIER_3_MAX) return 3;
-            if (amount > TIER_3_MAX) return 4;
-            return 0;
-        }
-
-        function updateGuidanceAndForm() {
-            const amount = parseFloat(amountInput.value) || 0;
-            currentTier = getTier(amount);
-            const requestType = document.querySelector('input[name="request-type"]:checked')?.value;
-            
-            guidanceSection.style.display = 'none';
-            detailsSection.style.display = 'none';
-            submitSection.style.display = 'none';
-
-            if (currentTier === 0) return;
-
-            guidanceSection.style.display = 'block';
-            let guidanceHTML = '';
-            let boxClass = '';
-            
-            switch (currentTier) {
-                case 1:
-                    boxClass = 'bg-green-50 border-green-300 text-green-800';
-                    guidanceHTML = `
-                        <h4 class="font-bold">Tier 1 Request ($${TIER_1_MAX} or less)</h4>
-                        <ul class="list-disc list-inside mt-2 text-sm">
-                            <li>No pre-approval is required.</li>
-                            <li>You may use personal funds and submit for reimbursement.</li>
-                        </ul>`;
-                    detailsSection.style.display = 'block';
-                    submitSection.style.display = 'block';
-                    break;
-                case 2:
-                    boxClass = 'bg-yellow-50 border-yellow-300 text-yellow-800';
-                    guidanceHTML = `
-                        <h4 class="font-bold">Tier 2 Request ($${TIER_1_MAX + 0.01} - $${TIER_2_MAX})</h4>
-                        <ul class="list-disc list-inside mt-2 text-sm">
-                            <li><strong>Admin pre-approval is required</strong> BEFORE purchase.</li>
-                            <li>You may request to use personal or school funds.</li>
-                            <li>To submit for reimbursement, you MUST attach proof of pre-approval.</li>
-                        </ul>`;
-                    detailsSection.style.display = 'block';
-                    submitSection.style.display = 'block';
-                    break;
-                case 3:
-                    boxClass = 'bg-red-50 border-red-300 text-red-800';
-                    guidanceHTML = `
-                        <h4 class="font-bold">Tier 3 Request ($${TIER_2_MAX + 0.01} - $${TIER_3_MAX})</h4>
-                        <ul class="list-disc list-inside mt-2 text-sm">
-                            <li><strong>Admin AND Board pre-approval is required.</strong></li>
-                            <li><strong>MUST use School Account.</strong> Personal funds are NOT authorized for Tier 3.</li>
-                            <li>You must submit a "Request for Pre-Approval" with a quote.</li>
-                        </ul>`;
-                    detailsSection.style.display = 'block';
-                    submitSection.style.display = 'block';
-                    break;
-                case 4:
-                    boxClass = 'bg-red-100 border-red-400 text-red-900';
-                    guidanceHTML = `
-                        <h4 class="font-bold">Amount Too High for Portal (Over $${TIER_3_MAX})</h4>
-                        <p class="mt-2 text-sm">Expenses of this size require special handling and cannot be submitted through this portal. Please email <a href="mailto:bod@svamail.com" class="font-bold underline">bod@svamail.com</a> with the full details.</p>
-                    `;
-                    // Do NOT show details or submit sections
-                    break;
-            }
-            guidanceBox.innerHTML = guidanceHTML;
-            guidanceBox.className = `mt-2 p-4 rounded-lg border ${boxClass}`;
-
-            if (currentTier > 0 && currentTier < 4) {
-                // Common logic for Tiers 1-3
-                document.querySelectorAll('#details-section .form-section').forEach(el => el.style.display = 'none');
-                document.querySelectorAll('#request-type-container input').forEach(el => el.disabled = false);
-                paymentMethodSelect.disabled = false;
-                
-                if (requestType === 'pre-approval') {
-                    quoteUploadContainer.style.display = 'block';
-                    paymentMethodContainer.style.display = 'block';
-                } else if (requestType === 'reimbursement') {
-                    receiptUploadContainer.style.display = 'block';
-                    paymentMethodContainer.style.display = 'block';
-                }
-
-                // Tier-specific overrides
-                if (currentTier === 1) {
-                    document.querySelector('input[name="request-type"][value="pre-approval"]').disabled = true;
-                    if (requestType === 'pre-approval') {
-                        document.querySelector('input[name="request-type"][value="reimbursement"]').checked = true;
-                    }
-                } else if (currentTier === 2) {
-                    if (requestType === 'reimbursement') {
-                        preApprovalUploadContainer.style.display = 'block';
-                    }
-                } else if (currentTier === 3) {
-                    document.querySelector('input[name="request-type"][value="reimbursement"]').disabled = true;
-                    if (requestType === 'reimbursement') {
-                        document.querySelector('input[name="request-type"][value="pre-approval"]').checked = true;
-                    }
-                    paymentMethodContainer.style.display = 'block';
-                    paymentMethodSelect.value = 'School';
-                    paymentMethodSelect.disabled = true;
-                    quoteUploadContainer.style.display = 'block';
-                }
-            }
-        }
-        
-        function validateForm() {
-            formErrorBox.classList.add('hidden');
-            let errors = [];
-            const requestType = document.querySelector('input[name="request-type"]:checked')?.value;
-
-            if (currentTier === 4) {
-                errors.push('Amount is too high for this portal. Please email the board directly.');
-            }
-            if (currentTier === 1 && requestType !== 'reimbursement') {
-                errors.push('Tier 1 expenses do not require pre-approval. Please select "Submit for Reimbursement".');
-            }
-            if (currentTier === 3 && requestType !== 'pre-approval') {
-                errors.push('Tier 3 expenses cannot be reimbursed. Please submit for "Pre-Approval".');
-            }
-            if (currentTier === 2 && requestType === 'reimbursement' && !document.getElementById('file-pre-approval').files[0]) {
-                errors.push('Tier 2 reimbursements require proof of pre-approval. Please upload the approval email.');
-            }
-            if (requestType === 'reimbursement' && !document.getElementById('file-receipt').files[0]) {
-                errors.push('Please upload a receipt or invoice for reimbursement.');
-            }
-            if (requestType === 'pre-approval' && !document.getElementById('file-quote').files[0]) {
-                errors.push('Please upload a quote for pre-approval.');
-            }
-            
-            if (errors.length > 0) {
-                formErrorBox.innerHTML = errors.join('<br>');
-                formErrorBox.classList.remove('hidden');
-                return false;
-            }
-            return true;
-        }
-
-        // --- FORM SUBMISSION HANDLERS ---
-        async function submitExpenseForm(e) {
+        // --- FORM SUBMISSION ---
+        function handleFormSubmit(e) {
             e.preventDefault();
-            if (!validateForm()) return;
-            
-            showLoading('Submitting request...');
-            
+            const form = e.target;
+            const submitBtn = document.getElementById('submit-btn');
+            showSpinnerOnButton(submitBtn, 'Submitting...', true);
+
+            // --- 1. Validate Form Logic ---
+            const tierInfo = getTierInfo(parseFloat(document.getElementById('amount').value));
+            const requestType = document.getElementById('request-type').value;
+            const paymentMethod = document.getElementById('payment-method').value;
+            const receiptFile = document.getElementById('receipt').files[0];
+            const quoteFile = document.getElementById('quote').files[0];
+            const preApprovalFile = document.getElementById('pre-approval').files[0];
+
+            let validationError = null;
+            if (tierInfo.tier === 4) validationError = "Amount is too high to submit via portal.";
+            if (tierInfo.tier >= 2 && requestType === 'reimbursement' && !preApprovalFile) validationError = "Proof of Pre-Approval file is required for Tier 2/3 reimbursements.";
+            if (tierInfo.tier === 3 && paymentMethod === 'Personal Account') validationError = "Tier 3 expenses must use a School Account.";
+            if (requestType === 'reimbursement' && !receiptFile) validationError = "A receipt file is required for all reimbursements.";
+            if (requestType === 'pre-approval' && !quoteFile) validationError = "A quote/invoice file is required for pre-approvals.";
+
+            if (validationError) {
+                showMessage('Submission Error', validationError, 'error');
+                showSpinnerOnButton(submitBtn, 'Submit Request', false);
+                return;
+            }
+
+            // --- 2. Prepare FormData ---
             const formData = new FormData();
             formData.append('action', 'submitRequest');
-            // No token for public submission
             formData.append('submitterName', document.getElementById('submitter-name').value);
             formData.append('submitterEmail', document.getElementById('submitter-email').value);
             formData.append('submitterRole', document.getElementById('submitter-role').value);
-            formData.append('category', categorySelect.value);
-            formData.append('amount', amountInput.value);
-            formData.append('tier', currentTier);
-            formData.append('requestType', document.querySelector('input[name="request-type"]:checked').value);
-            formData.append('paymentMethod', paymentMethodSelect.value);
-            formData.append('vendor', document.getElementById('vendor-name').value);
-            formData.append('description', document.getElementById('expense-description').value);
+            formData.append('category', document.getElementById('category').value);
+            formData.append('amount', parseFloat(document.getElementById('amount').value));
+            formData.append('tier', tierInfo.tier);
+            formData.append('requestType', requestType);
+            formData.append('paymentMethod', paymentMethod);
+            formData.append('vendor', document.getElementById('vendor').value);
+            formData.append('description', document.getElementById('description').value);
             
-            const quoteFile = document.getElementById('file-quote').files[0];
-            const receiptFile = document.getElementById('file-receipt').files[0];
-            const approvalFile = document.getElementById('file-pre-approval').files[0];
-
+            // Append files
             if (quoteFile) formData.append('quote', quoteFile);
             if (receiptFile) formData.append('receipt', receiptFile);
-            if (approvalFile) formData.append('preApproval', approvalFile);
-            
-            // MOCK: Simulate backend submission
-            console.log("Form Data:", Object.fromEntries(formData));
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            const mockResponse = {
-                status: 'success',
-                requestId: `REQ-${Math.floor(10000 + Math.random() * 90000)}`
-            };
-            
-            hideLoading();
-            
-            if (mockResponse.status === 'success') {
-                document.getElementById('reimbursement-form').reset();
-                updateGuidanceAndForm();
-                showMessage(
-                    'Success!',
-                    `Your request (ID: <strong>${mockResponse.requestId}</strong>) has been submitted. You can use this ID to check the status.`,
-                    'success'
-                );
-                // Switch to status check tab and prefill
-                switchToTab('status-check');
-                document.getElementById('status-request-id').value = mockResponse.requestId;
-                fetchStatus(mockResponse.requestId);
+            if (preApprovalFile) formData.append('preApproval', preApprovalFile);
 
-            } else {
-                showMessage('Submission Failed', mockResponse.message, 'error');
-            }
-            
-            /*
-            // REAL FETCH LOGIC
-            try {
-                const response = await fetch(WEB_APP_URL, {
-                    method: 'POST',
-                    body: formData
-                });
-                const result = await response.json();
-                hideLoading();
-
-                if (result.status === 'success') {
-                    document.getElementById('reimbursement-form').reset();
-                    updateGuidanceAndForm();
-                    showMessage('Success!', `Your request (ID: <strong>${result.requestId}</strong>) has been submitted.`, 'success');
-                    switchToTab('status-check');
-                    document.getElementById('status-request-id').value = result.requestId;
-                    fetchStatus(result.requestId);
+            // --- 3. Fetch (POST) ---
+            fetch(WEB_APP_URL, {
+                method: 'POST',
+                body: formData
+                // No 'Content-Type' header, browser sets it for FormData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showMessage('Submission Successful', `Your request has been submitted. Your Request ID is: ${data.requestId}. You will receive an email confirmation.`, 'success');
+                    form.reset();
+                    updateTierInfo(); // Reset form UI
+                    updateDynamicFormFields(); // Reset dynamic fields
                 } else {
-                    showMessage('Submission Failed', result.message, 'error');
+                    throw new Error(data.message);
                 }
-            } catch (error) {
-                hideLoading();
-                showMessage('Network Error', 'Could not submit request. Please try again.', 'error');
-            }
-            */
+            })
+            .catch(error => {
+                console.error('Submission error:', error);
+                showMessage('Submission Failed', `An error occurred: ${error.message}. Please try again.`, 'error');
+            })
+            .finally(() => {
+                showSpinnerOnButton(submitBtn, 'Submit Request', false);
+            });
         }
         
-        async function handleApprovalSubmit(requestId, decision, overrideComment = null) {
-            const comments = overrideComment || document.getElementById(`comments-${requestId}`).value;
-            if (decision === 'rejected' && !comments) {
-                showMessage('Comment Required', 'Comments are required when rejecting a request.', 'error');
+        // --- APPROVAL & ADMIN ACTIONS ---
+
+        function handleApprovalAction(requestId, decision, comments) {
+            if (!CURRENT_USER_TOKEN) {
+                showMessage('Error', 'You must be logged in to take action.', 'error');
                 return;
             }
             
-            showLoading('Submitting decision...');
-            
-            // MOCK: Simulate
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            const mockResponse = { status: 'success' };
-            
-            hideLoading();
-            if (mockResponse.status === 'success') {
-                showMessage('Success', `The request ${requestId} has been ${decision}.`, 'success');
-                fetchApproverData(); // Refresh all data
-            } else {
-                showMessage('Error', 'Could not submit decision.', 'error');
-            }
-            
-            /*
-            // REAL FETCH LOGIC
-            try {
-                const response = await fetch(WEB_APP_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        action: 'submitApproval', 
-                        token: ID_TOKEN, 
-                        requestId: requestId,
-                        decision: decision, 
-                        comments: comments 
-                    })
-                });
-                const result = await response.json();
-                hideLoading();
-                
-                if (result.status === 'success') {
-                    showMessage('Success', `The request ${requestId} has been ${decision}.`, 'success');
-                    fetchApproverData();
-                } else {
-                    showMessage('Error', result.message, 'error');
-                }
-            } catch (error) {
-                hideLoading();
-                showMessage('Network Error', 'Could not submit decision.', 'error');
-            }
-            */
-        }
-        
-        async function handleCheckIssued(requestId) {
-            const checkNumber = document.getElementById(`checknum-${requestId}`).value;
-            
-            showLoading('Updating status...');
-            
-            // MOCK: Simulate
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            const mockResponse = { status: 'success' };
-            
-            hideLoading();
-            if (mockResponse.status === 'success') {
-                showMessage('Success', `Request ${requestId} has been marked as 'Check Issued'.`, 'success');
-                fetchApproverData(); // Refresh all data
-            } else {
-                showMessage('Error', 'Could not update status.', 'error');
-            }
-            
-            /*
-            // REAL FETCH LOGIC
-            try {
-                const response = await fetch(WEB_APP_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        action: 'issueCheck', 
-                        token: ID_TOKEN, 
-                        requestId: requestId,
-                        checkNumber: checkNumber
-                    })
-                });
-                const result = await response.json();
-                hideLoading();
-                
-                if (result.status === 'success') {
-                    showMessage('Success', `Request ${requestId} has been marked as 'Check Issued'.`, 'success');
-                    fetchApproverData();
-                } else {
-                    showMessage('Error', result.message, 'error');
-                }
-            } catch (error) {
-                hideLoading();
-                showMessage('Network Error', 'Could not update status.', 'error');
-            }
-            */
-        }
-        
-        // --- STATUS CHECK ---
-        function handleStatusCheck(e) {
-            e.preventDefault();
-            const requestId = document.getElementById('status-request-id').value;
-            if (requestId) {
-                fetchStatus(requestId);
-            }
-        }
-        
-        async function fetchStatus(requestId) {
-            const resultsContainer = document.getElementById('status-results-container');
-            resultsContainer.classList.remove('hidden');
-            resultsContainer.innerHTML = `<p class="text-slate-500">Checking status for <strong>${requestId}</strong>...</p>`;
-            
-            // MOCK: Simulate fetch
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            const mockResponse = {
-                status: 'success',
-                request: {
+            const modalSubmitBtn = document.getElementById('modal-submit-btn');
+            showSpinnerOnButton(modalSubmitBtn, 'Submitting...', true);
+
+            fetch(WEB_APP_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'submitApproval',
+                    token: CURRENT_USER_TOKEN,
                     requestId: requestId,
-                    submitterName: 'Test S.',
-                    amount: '250.00',
-                    category: 'Classroom Supplies',
-                    currentStatus: 'Pending Admin Approval',
-                    history: [
-                        { status: 'Submitted', date: '2025-10-25' },
-                        { status: 'Pending Admin Approval', date: '2025-10-25' }
-                    ]
-                }
-            };
-            
-            if (mockResponse.status === 'success') {
-                const r = mockResponse.request;
-                let statusClass = 'bg-yellow-100 text-yellow-800';
-                if (r.currentStatus.includes('Approved')) statusClass = 'bg-green-100 text-green-800';
-                if (r.currentStatus.includes('Rejected')) statusClass = 'bg-red-100 text-red-800';
-                if (r.currentStatus.includes('Check Issued')) statusClass = 'bg-blue-100 text-blue-800';
-
-                resultsContainer.innerHTML = `
-                    <h3 class="text-xl font-bold text-slate-900">Status: 
-                        <span class="px-3 py-1 rounded-full text-lg font-semibold ${statusClass}">${r.currentStatus}</span>
-                    </h3>
-                    <div class="mt-4 grid grid-cols-2 gap-4 text-sm">
-                        <div><strong class="block text-slate-500">Request ID</strong> ${r.requestId}</div>
-                        <div><strong class="block text-slate-500">Submitter</strong> ${r.submitterName}</div>
-                        <div><strong class="block text-slate-500">Category</strong> ${r.category}</div>
-                        <div><strong class="block text-slate-500">Amount</strong> <span class="font-bold text-teal-700">$${r.amount}</span></div>
-                    </div>
-                    <h4 class="font-semibold text-slate-800 mt-6 mb-2">History</h4>
-                    <ul class="list-disc list-inside text-sm text-slate-600">
-                        ${r.history.map(h => `<li><strong>${h.status}</strong> on ${h.date}</li>`).join('')}
-                    </ul>
-                `;
-            } else {
-                resultsContainer.innerHTML = `<p class="text-red-600">${mockResponse.message || 'Request ID not found.'}</p>`;
-            }
-
-            /*
-            // REAL FETCH LOGIC
-            try {
-                const response = await fetch(`${WEB_APP_URL}?action=checkStatus&id=${requestId}`);
-                const data = await response.json();
-                
+                    decision: decision,
+                    comments: comments
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
                 if (data.status === 'success') {
-                    // ... render logic ...
+                    showMessage('Action Recorded', `Your decision for ${requestId} has been recorded.`, 'success');
+                    closeApprovalModal();
+                    fetchApproverData(); // Refresh list
                 } else {
-                    resultsContainer.innerHTML = `<p class="text-red-600">${data.message}</p>`;
+                    throw new Error(data.message);
                 }
-            } catch (err) {
-                resultsContainer.innerHTML = `<p class="text-red-600">Could not connect to the server.</p>`;
-            }
-            */
+            })
+            .catch(error => {
+                console.error('Approval error:', error);
+                showMessage('Error', `Could not record decision: ${error.message}`, 'error');
+            })
+            .finally(() => {
+                showSpinnerOnButton(modalSubmitBtn, 'Submit Decision', false);
+            });
         }
         
-        // --- UTILITIES ---
-        function showLoading(message) {
-            document.getElementById('loading-message').textContent = message || 'Loading...';
-            document.getElementById('loading-overlay').classList.remove('hidden');
-        }
-
-        function hideLoading() {
-            document.getElementById('loading-overlay').classList.add('hidden');
-        }
-
-        function showMessage(title, body, type = 'success') {
-            const modal = document.getElementById('message-modal');
-            const card = document.getElementById('message-modal-card');
-            const icon = document.getElementById('message-icon');
-            
-            document.getElementById('message-title').textContent = title;
-            document.getElementById('message-body').innerHTML = body;
-
-            if (type === 'success') {
-                icon.className = 'ph-check-circle text-6xl text-green-500 mx-auto';
-            } else {
-                icon.className = 'ph-x-circle text-6xl text-red-500 mx-auto';
+        function handleIssueCheck(requestId, checkNumber) {
+            if (!CURRENT_USER_TOKEN || !IS_ADMIN) {
+                showMessage('Error', 'You must be logged in as an admin.', 'error');
+                return;
             }
+            
+            const modalSubmitBtn = document.getElementById('issue-modal-submit-btn');
+            showSpinnerOnButton(modalSubmitBtn, 'Processing...', true);
+
+            fetch(WEB_APP_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'issueCheck',
+                    token: CURRENT_USER_TOKEN,
+                    requestId: requestId,
+                    checkNumber: checkNumber
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showMessage('Payment Recorded', `Request ${requestId} has been marked as "Check Issued".`, 'success');
+                    closeIssueCheckModal();
+                    fetchApproverData(); // Refresh admin list
+                } else {
+                    throw new Error(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Issue check error:', error);
+                showMessage('Error', `Could not update status: ${error.message}`, 'error');
+            })
+            .finally(() => {
+                showSpinnerOnButton(modalSubmitBtn, 'Mark as "Check Issued"', false);
+            });
+        }
+
+
+        // --- DYNAMIC FORM UI ---
+        function getTierInfo(amount) {
+            if (isNaN(amount) || amount <= 0) return { tier: 0, title: '', description: '' };
+            if (amount <= TIER_1_MAX) return {
+                tier: 1,
+                title: 'Tier 1 Request',
+                description: 'No prior approval needed. Personal accounts can be used for payment.'
+            };
+            if (amount <= TIER_2_MAX) return {
+                tier: 2,
+                title: 'Tier 2 Request',
+                description: 'Requires School Admin approval BEFORE purchase. Personal or school account can be used.'
+            };
+            if (amount <= TIER_3_MAX) return {
+                tier: 3,
+                title: 'Tier 3 Request',
+                description: 'Requires Admin AND Board approval BEFORE purchase. Must use School Account for payment.'
+            };
+            return {
+                tier: 4, // Too high
+                title: 'Amount Exceeds Portal Limit',
+                description: `Expenses over $${TIER_3_MAX} cannot be submitted via this portal. Please email <a href="mailto:bod@svamail.com" class="font-medium text-red-800 underline">bod@svamail.com</a> directly with details.`
+            };
+        }
+
+        function updateTierInfo() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            const tierInfo = getTierInfo(amount);
+            const infoBox = document.getElementById('tier-info-box');
+            const errorBox = document.getElementById('amount-too-high');
+            const submitBtn = document.getElementById('submit-btn');
+
+            if (tierInfo.tier === 0) {
+                infoBox.classList.add('hidden');
+                errorBox.classList.add('hidden');
+                submitBtn.disabled = false;
+            } else if (tierInfo.tier === 4) {
+                infoBox.classList.add('hidden');
+                errorBox.classList.remove('hidden');
+                document.getElementById('amount-too-high-desc').innerHTML = tierInfo.description;
+                submitBtn.disabled = true;
+            } else {
+                errorBox.classList.add('hidden');
+                infoBox.classList.remove('hidden');
+                document.getElementById('tier-title').textContent = tierInfo.title;
+                document.getElementById('tier-description').textContent = tierInfo.description;
+                submitBtn.disabled = false;
+            }
+            updateDynamicFormFields();
+        }
+
+        function updateDynamicFormFields() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            const tierInfo = getTierInfo(amount);
+            const requestType = document.getElementById('request-type').value;
+
+            const paymentMethodSelect = document.getElementById('payment-method');
+            const paymentWarning = document.getElementById('payment-method-warning');
+            const preApprovalUpload = document.getElementById('pre-approval-upload-section');
+            const receiptUpload = document.getElementById('receipt-upload-section');
+            const quoteUpload = document.getElementById('quote-upload-section');
+
+            // Rule 1: Tier 3 must use School Account
+            if (tierInfo.tier === 3) {
+                paymentMethodSelect.value = 'School Account';
+                paymentMethodSelect.disabled = true;
+                paymentWarning.textContent = 'Tier 3 requests must use the School Account.';
+                paymentWarning.classList.remove('hidden');
+            } else {
+                paymentMethodSelect.disabled = false;
+                paymentWarning.classList.add('hidden');
+                if (paymentMethodSelect.value === 'School Account' && tierInfo.tier < 3) {
+                    paymentMethodSelect.value = ''; // Reset if tier drops
+                }
+            }
+
+            // Rule 2: Show correct file upload fields based on Request Type
+            if (requestType === 'reimbursement') {
+                receiptUpload.classList.remove('hidden');
+                quoteUpload.classList.add('hidden');
+            } else if (requestType === 'pre-approval') {
+                receiptUpload.classList.add('hidden');
+                quoteUpload.classList.remove('hidden');
+            } else {
+                receiptUpload.classList.add('hidden');
+                quoteUpload.classList.add('hidden');
+            }
+
+            // Rule 3: Tier 2/3 reimbursements require pre-approval proof
+            if (tierInfo.tier >= 2 && requestType === 'reimbursement') {
+                preApprovalUpload.classList.remove('hidden');
+            } else {
+                preApprovalUpload.classList.add('hidden');
+            }
+        }
+        
+        // --- RENDERING FUNCTIONS ---
+        function renderApprovals() {
+            const list = document.getElementById('approvals-list');
+            if (myApprovals.length === 0) {
+                list.innerHTML = getEmptyStateHtml("You have no pending approvals.");
+                return;
+            }
+
+            list.innerHTML = myApprovals.map(req => {
+                const now = new Date();
+                const submissionDate = new Date(req.submission_date);
+                const daysElapsed = (now - submissionDate) / (1000 * 60 * 60 * 24);
+                let timeoutWarning = '';
+                let overrideButton = '';
+
+                if (daysElapsed > 5) {
+                    timeoutWarning = `<div class="mt-2 text-sm font-medium text-red-600"><i class="ph-warning-circle align-middle mr-1"></i> This request is ${Math.floor(daysElapsed)} days old (over 5-day limit).</div>`;
+                    if (IS_ADMIN) {
+                        overrideButton = `<button class="action-btn-override w-full sm:w-auto bg-yellow-100 text-yellow-800 hover:bg-yellow-200" data-id="${req.id}" data-desc="${req.description}">
+                                            <i class="ph-warning-diamond mr-1.5"></i> Admin Override
+                                        </button>`;
+                    }
+                }
+                
+                return `
+                <div class="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
+                    <div class="p-5 sm:p-6">
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-start">
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-800">$${req.amount.toFixed(2)} - ${req.description}</h3>
+                                <p class="text-sm text-slate-500 mt-1">
+                                    Submitted by <span class="font-medium">${req.submitter}</span> on ${req.date}
+                                </p>
+                                <div class="mt-2 text-sm">
+                                    <span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-0.5 text-xs font-medium text-blue-800">Tier ${req.tier}</span>
+                                    <span class="inline-flex items-center rounded-full bg-gray-100 px-3 py-0.5 text-xs font-medium text-gray-800 ml-2">${req.status}</span>
+                                </div>
+                                ${timeoutWarning}
+                            </div>
+                            <div class="mt-4 sm:mt-0 sm:ml-6 sm:text-right flex-shrink-0">
+                                <p class="text-sm font-medium text-slate-600">Request ID</p>
+                                <p class="text-lg font-mono text-slate-900">${req.id}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 px-5 py-4 border-t border-slate-200">
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <button class="action-btn-approve w-full sm:w-auto bg-teal-600 text-white hover:bg-teal-700" data-id="${req.id}" data-desc="${req.description}">
+                                <i class="ph-check-circle mr-1.5"></i> Approve
+                            </button>
+                            <button class="action-btn-reject w-full sm:w-auto bg-red-600 text-white hover:bg-red-700" data-id="${req.id}" data-desc="${req.description}">
+                                <i class="ph-x-circle mr-1.5"></i> Reject
+                            </button>
+                            ${overrideButton}
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function renderAdminTasks() {
+            const list = document.getElementById('admin-tasks-list');
+            if (adminTasks.length === 0) {
+                list.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-slate-500">No requests are pending payment.</td></tr>`;
+                return;
+            }
+
+            list.innerHTML = adminTasks.map(task => `
+                <tr class="hover:bg-slate-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-slate-900">${task.submitter}</div>
+                        <div class="text-xs text-slate-500">${task.id}</div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="text-sm font-medium text-slate-900">$${task.amount.toFixed(2)}</div>
+                        <div class="text-xs text-slate-500 truncate" style="max-width: 200px;">${task.description}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center rounded-full px-3 py-0.5 text-xs font-medium ${task.paymentMethod === 'School Account' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}">
+                            ${task.paymentMethod}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <button class="action-btn-issue-check inline-flex items-center rounded-lg bg-teal-600 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-teal-700" data-id="${task.id}">
+                            <i class="ph-check-fat mr-1.5"></i> Issue Payment
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // --- MODAL & UI HELPERS ---
+        function showView(viewId) {
+            // Hide all tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('tab-content-active');
+            });
+            // Deactivate all tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('tab-active');
+            });
+
+            // Show the selected tab content
+            document.getElementById(viewId).classList.add('tab-content-active');
+            // Activate the selected tab button
+            document.querySelector(`.tab-btn[data-tab="${viewId}"]`).classList.add('tab-active');
+            
+            // Don't modify history, to keep auth tokens in URL clean
+        }
+        
+        function openApprovalModal(requestId, description, decision) {
+            const modal = document.getElementById('approval-modal');
+            const modalSubmitBtn = document.getElementById('modal-submit-btn');
+            const commentsField = document.getElementById('modal-comments');
+            
+            document.getElementById('modal-request-id').textContent = requestId;
+            commentsField.value = ''; // Clear comments
+            
+            if (decision === 'approved' || decision === 'admin_override') {
+                document.getElementById('modal-title').textContent = 'Approve Request';
+                document.getElementById('modal-subtitle').textContent = `For Request ID: ${requestId}`;
+                modalSubmitBtn.className = "w-full sm:w-auto inline-flex justify-center rounded-lg border border-transparent bg-teal-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-teal-700";
+                modalSubmitBtn.innerHTML = 'Submit Approval';
+                commentsField.placeholder = 'Optional comments for approval...';
+                if (decision === 'admin_override') {
+                     document.getElementById('modal-title').textContent = 'Admin Override Approval';
+                     commentsField.value = 'Admin Override (5-day rule): ';
+                }
+            } else { // 'rejected'
+                document.getElementById('modal-title').textContent = 'Reject Request';
+                document.getElementById('modal-subtitle').textContent = `For Request ID: ${requestId}`;
+                modalSubmitBtn.className = "w-full sm:w-auto inline-flex justify-center rounded-lg border border-transparent bg-red-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-red-700";
+                modalSubmitBtn.innerHTML = 'Submit Rejection';
+                commentsField.placeholder = 'Rejection reason is required...';
+            }
+            
+            // Set data attributes for the submit button
+            modalSubmitBtn.dataset.id = requestId;
+            modalSubmitBtn.dataset.decision = decision;
             
             modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.style.opacity = '1';
-                card.style.transform = 'scale(1)';
-            }, 10);
         }
 
-        function hideMessage() {
-            const modal = document.getElementById('message-modal');
-            const card = document.getElementById('message-modal-card');
+        function closeApprovalModal() {
+            document.getElementById('approval-modal').classList.add('hidden');
+        }
+        
+        function openIssueCheckModal(requestId) {
+            const modal = document.getElementById('issue-check-modal');
+            document.getElementById('issue-modal-request-id').textContent = requestId;
+            document.getElementById('issue-modal-check-number').value = '';
+            document.getElementById('issue-modal-submit-btn').dataset.id = requestId;
+            modal.classList.remove('hidden');
+        }
+        
+        function closeIssueCheckModal() {
+            document.getElementById('issue-check-modal').classList.add('hidden');
+        }
+
+        function showMessage(title, text, type = 'error') {
+            const overlay = document.getElementById('message-overlay');
+            const iconContainer = document.getElementById('message-icon');
+            const titleEl = document.getElementById('message-title');
+            const textEl = document.getElementById('message-text');
+
+            titleEl.textContent = title;
+            textEl.innerHTML = text; // Use innerHTML to allow links
+
+            if (type === 'success') {
+                iconContainer.className = 'mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100';
+                iconContainer.innerHTML = '<i class="ph-check text-2xl text-green-600"></i>';
+            } else { // error
+                iconContainer.className = 'mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100';
+                iconContainer.innerHTML = '<i class="ph-x text-2xl text-red-600"></i>';
+            }
+            overlay.classList.remove('hidden');
+        }
+        
+        function getSpinnerHtml(message) {
+            return `
+            <div class="py-6 text-center text-sm text-slate-500">
+                <i class="ph-spinner-gap text-2xl animate-spin text-teal-600"></i>
+                <p class="mt-2">${message}</p>
+            </div>`;
+        }
+
+        function getEmptyStateHtml(message) {
+            return `
+            <div class="py-6 text-center text-sm text-slate-500 border-2 border-dashed border-slate-200 rounded-lg">
+                <i class="ph-folder-simple text-3xl text-slate-400"></i>
+                <p class="mt-2 font-medium">${message}</p>
+            </div>`;
+        }
+        
+        function showSpinnerOnButton(button, text, isLoading) {
+            if (!button) return;
+            button.disabled = isLoading;
+            if (isLoading) {
+                button.innerHTML = `
+                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    ${text}
+                `;
+            } else {
+                // Restore original text (this is a bit simplified)
+                if(button.id === 'submit-btn') button.innerHTML = `<i class="ph-paper-plane-tilt mr-2"></i> ${text}`;
+                else button.textContent = text;
+            }
+        }
+        
+        // --- GLOBAL EVENT LISTENERS ---
+        function addEventListeners() {
+            // Tab navigation
+            document.querySelector('nav').addEventListener('click', (e) => {
+                if (e.target.matches('.tab-btn')) {
+                    showView(e.target.dataset.tab);
+                }
+            });
+
+            // Submission form
+            document.getElementById('expense-form').addEventListener('submit', handleFormSubmit);
+            document.getElementById('amount').addEventListener('input', updateTierInfo);
+            document.getElementById('request-type').addEventListener('change', updateDynamicFormFields);
+
+            // Message overlay close
+            document.getElementById('message-close-btn').addEventListener('click', () => {
+                document.getElementById('message-overlay').classList.add('hidden');
+            });
             
-            modal.style.opacity = '0';
-            card.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300);
+            // Approval Modal
+            document.getElementById('approvals-list').addEventListener('click', (e) => {
+                const button = e.target.closest('button');
+                if (!button) return;
+
+                const id = button.dataset.id;
+                const desc = button.dataset.desc;
+
+                if (button.classList.contains('action-btn-approve')) {
+                    openApprovalModal(id, desc, 'approved');
+                } else if (button.classList.contains('action-btn-reject')) {
+                    openApprovalModal(id, desc, 'rejected');
+                } else if (button.classList.contains('action-btn-override')) {
+                    openApprovalModal(id, desc, 'admin_override');
+                }
+            });
+
+            document.getElementById('modal-submit-btn').addEventListener('click', (e) => {
+                const btn = e.target;
+                const id = btn.dataset.id;
+                const decision = btn.dataset.decision;
+                const comments = document.getElementById('modal-comments').value;
+
+                if (decision === 'rejected' && !comments) {
+                    showMessage('Error', 'Comments are required when rejecting a request.', 'error');
+                    return;
+                }
+                handleApprovalAction(id, decision, comments);
+            });
+            
+            document.getElementById('modal-cancel-btn').addEventListener('click', closeApprovalModal);
+
+            // Issue Check Modal
+            document.getElementById('admin-tasks-list').addEventListener('click', (e) => {
+                const button = e.target.closest('button.action-btn-issue-check');
+                if (button) {
+                    openIssueCheckModal(button.dataset.id);
+                }
+            });
+            
+            document.getElementById('issue-modal-submit-btn').addEventListener('click', (e) => {
+                const id = e.target.dataset.id;
+                const checkNumber = document.getElementById('issue-modal-check-number').value;
+                handleIssueCheck(id, checkNumber);
+            });
+            
+            document.getElementById('issue-modal-cancel-btn').addEventListener('click', closeIssueCheckModal);
         }
 
     </script>
