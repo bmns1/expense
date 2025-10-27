@@ -78,6 +78,15 @@
              background: #e2e8f0; /* slate-200 */
           }
 
+          /* Style for policy details */
+          .policy-tier {
+             border-left-width: 4px;
+             padding-left: 1rem; /* pl-4 */
+             margin-bottom: 1.5rem; /* mb-6 */
+          }
+           .policy-tier h4 { margin-bottom: 0.5rem; /* mb-2 */ }
+           .policy-tier ul { margin-top: 0.75rem; /* mt-3 */ }
+
     </style>
 </head>
 <body class="antialiased text-slate-800">
@@ -89,7 +98,7 @@
     </div>
 
     <!-- Message Display Area -->
-    <div id="message-container" class="fixed top-5 right-5 z-50">
+    <div id="message-container" class="fixed top-5 right-5 z-50 max-w-sm w-full">
         <!-- Messages appear here -->
     </div>
 
@@ -175,72 +184,125 @@
 
         <main class="max-w-7xl mx-auto py-8 sm:py-10 px-4 sm:px-6 lg:px-8">
 
-            <!-- Policy Tab -->
+             <!-- ========================= -->
+             <!--      POLICY TAB           -->
+             <!-- ========================= -->
             <div id="policy" class="tab-content tab-content-active space-y-6">
                 <h2 class="text-3xl font-bold text-slate-900 mb-6">Reimbursement Policy & Procedure</h2>
+
                 <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
-                    <h3 class="text-xl font-semibold text-slate-800 mb-3">Overview</h3>
+                    <h3 class="text-xl font-semibold text-slate-800 mb-3 flex items-center"><i class="ph-info text-blue-600 mr-2 text-2xl"></i> Overview</h3>
                     <p class="text-slate-600 text-sm leading-relaxed">
-                        This portal facilitates the process for requesting reimbursements or pre-approval for purchases made on behalf of Silicon Valley Academy (SVA). Please review the policy tiers carefully before submitting your request. All requests require appropriate documentation (receipts, quotes, or prior approval emails). For questions, contact <a href="mailto:admin@svamail.com" class="text-teal-600 hover:underline font-medium">admin@svamail.com</a>.
+                        This policy outlines the procedures for requesting reimbursement or pre-approval for purchases made on behalf of Silicon Valley Academy (SVA). Adherence to this policy ensures timely processing and responsible use of school funds. All requests must be submitted through this portal unless otherwise specified.
+                    </p>
+                     <p class="text-slate-600 text-sm leading-relaxed mt-2">
+                        For policy questions, please contact <a href="mailto:admin@svamail.com" class="text-teal-600 hover:underline font-medium">admin@svamail.com</a>. For technical issues with the portal, contact the administrator.
                     </p>
                 </div>
+
                 <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
-                     <h3 class="text-xl font-semibold text-slate-800 mb-4">Expense Tiers & Approval Requirements</h3>
-                     <div class="space-y-5">
+                     <h3 class="text-xl font-semibold text-slate-800 mb-4 flex items-center"><i class="ph-stack text-blue-600 mr-2 text-2xl"></i> Expense Tiers & Approval Workflow</h3>
+                     <div class="space-y-6">
+
                          <!-- Tier 1 -->
-                         <div class="p-4 border border-blue-200 rounded-md bg-blue-50">
-                             <h4 class="font-semibold text-blue-800">Tier 1: Up to $<span class="tier-limit" data-tier="1">200</span></h4>
-                             <ul class="list-disc list-inside text-sm text-blue-700 mt-2 space-y-1">
-                                 <li>**No Prior Approval Required:** For routine, small expenses (e.g., classroom supplies).</li>
-                                 <li>**Payment Method:** Can use personal funds (submit for reimbursement) or request school account use if applicable.</li>
-                                 <li>**Documentation:** Requires a clear receipt or invoice.</li>
-                                 <li>**Submission:** Submit via the "New Request" tab. Reimbursements are typically auto-approved upon submission if documentation is valid.</li>
-                             </ul>
-                         </div>
+                        <div class="policy-tier border-l-blue-500">
+                            <h4 class="font-bold text-lg text-blue-800">Tier 1: Up to $<span class="tier-limit" data-tier="1">200.00</span></h4>
+                            <ul class="list-disc list-inside text-sm text-slate-700 mt-2 space-y-2">
+                                <li><strong>Purpose:</strong> Routine, small-dollar expenses (e.g., standard classroom supplies, minor replacements).</li>
+                                <li><strong>Pre-Approval:</strong> <strong class="text-green-700">Not required.</strong></li>
+                                <li><strong>Payment Method:</strong>
+                                    <ul class="list-circle list-inside ml-4 text-xs">
+                                        <li><strong class="text-indigo-700">Personal Funds (Reimbursement):</strong> Preferred method. Submit request via portal *after* purchase.</li>
+                                        <li><strong class="text-gray-600">School Account:</strong> Generally discouraged for Tier 1. If necessary, requires justification and may need informal admin consent prior to request. Submit as "School Payment Request".</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Documentation:</strong>
+                                    <ul class="list-circle list-inside ml-4 text-xs">
+                                        <li>For Reimbursement: Clear, itemized <strong class="text-red-600">Receipt/Invoice</strong> showing vendor, date, items purchased, amount paid, and proof of payment.</li>
+                                         <li>For School Payment: Vendor <strong class="text-red-600">Quote/Invoice</strong>.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Portal Process:</strong> Submit "New Request". Reimbursements are typically auto-approved if documentation is valid and within budget. School Payment requests route to Admin.</li>
+                            </ul>
+                        </div>
+
                          <!-- Tier 2 -->
-                         <div class="p-4 border border-yellow-300 rounded-md bg-yellow-50">
-                             <h4 class="font-semibold text-yellow-800">Tier 2: $<span class="tier-limit" data-tier="1-plus">200.01</span> - $<span class="tier-limit" data-tier="2">1000</span></h4>
-                             <ul class="list-disc list-inside text-sm text-yellow-700 mt-2 space-y-1">
-                                 <li>**Admin Pre-Approval Required:** Must obtain approval from a school administrator **before** making the purchase.</li>
-                                 <li>**Payment Method:** Can use personal funds (submit for reimbursement after pre-approval) or request school account use.</li>
-                                 <li>**Documentation:** Requires the **pre-approval email/documentation** AND the final receipt/invoice (for reimbursement) or quote (for school payment).</li>
-                                 <li>**Submission:** Submit via the "New Request" tab. Select "Pre-Approval Request" initially. Once pre-approved, submit again selecting "Reimbursement" or "School Payment Request".</li>
-                                 <li>**Approval Process:** After submission, requires formal approval by an Admin within the portal (even if pre-approved via email).</li>
+                        <div class="policy-tier border-l-yellow-500">
+                            <h4 class="font-bold text-lg text-yellow-800">Tier 2: $<span class="tier-limit" data-tier="1-plus">200.01</span> - $<span class="tier-limit" data-tier="2">1000.00</span></h4>
+                             <ul class="list-disc list-inside text-sm text-slate-700 mt-2 space-y-2">
+                                <li><strong>Purpose:</strong> Moderate expenses (e.g., larger supply orders, small equipment, event costs).</li>
+                                <li><strong>Pre-Approval:</strong> <strong class="text-red-600">Required BEFORE purchase.</strong> Obtain written approval (e.g., email) from a designated School Administrator.</li>
+                                <li><strong>Payment Method:</strong>
+                                    <ul class="list-circle list-inside ml-4 text-xs">
+                                        <li><strong class="text-indigo-700">Personal Funds (Reimbursement):</strong> Allowed only *after* obtaining Admin pre-approval.</li>
+                                        <li><strong class="text-gray-600">School Account:</strong> Allowed only *after* obtaining Admin pre-approval.</li>
+                                    </ul>
+                                </li>
+                                 <li><strong>Documentation:</strong>
+                                    <ul class="list-circle list-inside ml-4 text-xs">
+                                         <li><strong class="text-red-600">Admin Pre-Approval Proof:</strong> Attach the email or document showing explicit approval.</li>
+                                         <li>For Reimbursement: Final, itemized <strong class="text-red-600">Receipt/Invoice</strong>.</li>
+                                         <li>For School Payment: Vendor <strong class="text-red-600">Quote/Invoice</strong>.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Portal Process:</strong> Submit "New Request". Attach all required documents. Routes to Admin for formal approval within the portal (even with prior email approval).</li>
                              </ul>
-                         </div>
+                        </div>
+
                          <!-- Tier 3 -->
-                         <div class="p-4 border border-orange-300 rounded-md bg-orange-50">
-                             <h4 class="font-semibold text-orange-800">Tier 3: $<span class="tier-limit" data-tier="2-plus">1000.01</span> - $<span class="tier-limit" data-tier="3">5000</span></h4>
-                             <ul class="list-disc list-inside text-sm text-orange-700 mt-2 space-y-1">
-                                 <li>**Admin AND Board Pre-Approval Required:** Must obtain approval from both a school administrator AND a designated board member **before** making the purchase.</li>
-                                 <li>**Payment Method:** **MUST use school account.** Personal funds cannot be used for reimbursement in this tier.</li>
-                                 <li>**Documentation:** Requires the **Admin & Board pre-approval documentation** AND the vendor quote/invoice.</li>
-                                 <li>**Submission:** Submit via the "New Request" tab. Select "Pre-Approval Request" initially. Once pre-approved, submit again selecting "School Payment Request".</li>
-                                 <li>**Approval Process:** After submission, requires formal approval by both an Admin and a Board Member within the portal.</li>
-                             </ul>
-                         </div>
-                          <!-- Over Tier 3 -->
-                         <div class="p-4 border border-red-300 rounded-md bg-red-50">
-                             <h4 class="font-semibold text-red-800">Over $<span class="tier-limit" data-tier="3">5000</span></h4>
-                              <p class="text-sm text-red-700 mt-2">
-                                 Expenses exceeding $<span class="tier-limit" data-tier="3">5000</span> cannot be processed through this portal. Please contact the Board of Directors directly at <a href="mailto:bod@svamail.com" class="font-medium hover:underline">bod@svamail.com</a> with detailed justification and quotes for consideration.
+                        <div class="policy-tier border-l-orange-600">
+                            <h4 class="font-bold text-lg text-orange-800">Tier 3: $<span class="tier-limit" data-tier="2-plus">1000.01</span> - $<span class="tier-limit" data-tier="3">5000.00</span></h4>
+                             <ul class="list-disc list-inside text-sm text-slate-700 mt-2 space-y-2">
+                                 <li><strong>Purpose:</strong> Significant expenses (e.g., major equipment, software licenses, larger event contracts).</li>
+                                 <li><strong>Pre-Approval:</strong> <strong class="text-red-600">Required BEFORE purchase.</strong> Obtain written approval from BOTH a School Administrator AND a designated Board Member.</li>
+                                 <li><strong>Payment Method:</strong>
+                                    <ul class="list-circle list-inside ml-4 text-xs">
+                                        <li><strong class="text-gray-600">School Account ONLY.</strong> Personal funds are <strong class="text-red-700">NOT permitted</strong> for Tier 3 purchases (no reimbursement).</li>
+                                    </ul>
+                                 </li>
+                                 <li><strong>Documentation:</strong>
+                                    <ul class="list-circle list-inside ml-4 text-xs">
+                                         <li><strong class="text-red-600">Admin & Board Pre-Approval Proof:</strong> Attach documentation showing explicit approval from both parties.</li>
+                                         <li>Vendor <strong class="text-red-600">Quote/Invoice</strong> for the requested school payment.</li>
+                                    </ul>
+                                 </li>
+                                 <li><strong>Portal Process:</strong> Submit "New Request" as "School Payment Request". Attach all required documents. Routes first to Admin, then to Board Member for formal approval within the portal.</li>
+                            </ul>
+                        </div>
+
+                         <!-- Over Tier 3 -->
+                         <div class="policy-tier border-l-red-600">
+                             <h4 class="font-bold text-lg text-red-800">Over $<span class="tier-limit" data-tier="3">5000.00</span></h4>
+                              <p class="text-sm text-slate-700 mt-2">
+                                 Expenses exceeding this threshold require direct Board review and approval outside of this portal. Do not use this form. Please compile detailed justification, multiple quotes (if applicable), and budget impact information, then contact the Board directly via <a href="mailto:bod@svamail.com" class="font-medium text-teal-600 hover:underline">bod@svamail.com</a>.
                              </p>
                          </div>
                      </div>
                 </div>
+
                  <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
-                     <h3 class="text-xl font-semibold text-slate-800 mb-3">General Guidelines</h3>
-                    <ul class="list-disc list-inside text-sm text-slate-600 space-y-2">
-                        <li>**Timeliness:** Reimbursement requests should be submitted within 30 days of the purchase date.</li>
-                        <li>**Documentation:** All submissions require clear, itemized receipts or invoices. Quotes are required for pre-approval requests involving school funds. Attachments must be clear and legible.</li>
-                        <li>**Approval Timeframe:** Approvers (Admin/Board) are expected to review requests within 5 business days.</li>
-                        <li>**Payment:** Approved reimbursements are typically processed within 1-2 weeks after final approval. School account payments are made directly to the vendor based on the approved quote/invoice.</li>
-                        <li>**Non-Compliance:** Requests submitted without required pre-approvals or documentation may be delayed or denied.</li>
+                     <h3 class="text-xl font-semibold text-slate-800 mb-3 flex items-center"><i class="ph-check-square-offset text-blue-600 mr-2 text-2xl"></i> General Guidelines & Procedures</h3>
+                    <ul class="list-disc list-inside text-sm text-slate-600 space-y-3">
+                        <li><strong>Timeliness:</strong> Reimbursement requests for purchases made with personal funds should be submitted via the portal within <strong class="text-indigo-700">30 calendar days</strong> of the purchase date. Late submissions may be denied. Pre-approval requests should be submitted well in advance of the purchase need.</li>
+                        <li><strong>Required Documentation:</strong>
+                            <ul class="list-circle list-inside ml-4 text-xs space-y-1">
+                                <li><strong>Receipts:</strong> Must be clear, legible, itemized, and show vendor name, transaction date, description of items, total amount paid, and proof of payment (e.g., last 4 digits of card, "paid" stamp). Photos or scans are acceptable.</li>
+                                <li><strong>Quotes/Invoices:</strong> Must clearly show vendor details, item/service descriptions, quantities, unit prices, and total cost.</li>
+                                <li><strong>Pre-Approval Proof:</strong> Must be the explicit written confirmation (e.g., forwarded email chain, signed document scan) from the required approver(s).</li>
+                                <li><strong>File Format/Size:</strong> Attachments must be in <strong class="text-indigo-700">PDF, PNG, JPG, or JPEG</strong> format. Each file must be <strong class="text-indigo-700">under 10MB</strong>. Combine multiple receipts/pages into a single PDF if possible.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Approval Workflow:</strong> Requests automatically route based on the tier. Approvers (Admin, Board) receive email notifications and must log in to the portal to approve or reject requests. Approvers should review within <strong class="text-indigo-700">5 business days</strong>. If an approval is delayed beyond 5 days, an Admin may override the pending approval step if necessary.</li>
+                        <li><strong>Payment Processing:</strong> Once a request reaches "Approved" status, the finance department will process the payment. Reimbursements are typically issued via check or direct deposit (if set up) within 1-2 weeks. School account payments are made directly to the vendor. The request status will update to "Check Issued" once payment is processed.</li>
+                        <li><strong>Non-Compliance & Disputes:</strong> Failure to follow the policy (e.g., missing pre-approval, inadequate documentation) may result in processing delays or denial of the request. Disputed decisions should be discussed with the initial approver or escalated to the finance department.</li>
+                         <li><strong>Budget Availability:</strong> All approvals are contingent upon budget availability for the relevant department or category. Pre-approval does not guarantee final payment if budget constraints arise, although this is rare.</li>
                     </ul>
                  </div>
             </div>
 
-            <!-- New Request Tab -->
+             <!-- ========================= -->
+             <!--     NEW REQUEST TAB       -->
+             <!-- ========================= -->
             <div id="new-request" class="tab-content">
                 <h2 class="text-3xl font-bold text-slate-900 mb-6">Submit New Expense Request</h2>
                 <form id="expense-form" class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 space-y-6">
@@ -338,20 +400,21 @@
                       <!-- File Uploads -->
                     <fieldset id="file-uploads-section" class="hidden">
                         <legend class="text-lg font-semibold text-slate-800 mb-3 border-b pb-2">Attachments</legend>
+                        <p class="text-xs text-slate-500 mb-3">Allowed file types: PDF, PNG, JPG, JPEG. Max size: 10MB per file.</p>
                         <div class="space-y-4">
                              <div id="receipt-upload" class="hidden">
                                 <label for="receipt" class="block text-sm font-medium text-slate-700">Receipt / Final Invoice <span class="text-red-500">*</span></label>
-                                <input type="file" id="receipt" name="receipt" class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border file:border-slate-300 file:text-sm file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 cursor-pointer">
+                                <input type="file" id="receipt" name="receipt" accept=".pdf,.png,.jpg,.jpeg" class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border file:border-slate-300 file:text-sm file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 cursor-pointer">
                                 <p class="mt-1 text-xs text-slate-500">Required for Reimbursements. Clear, itemized receipt showing vendor, date, items, and total amount.</p>
                             </div>
                              <div id="quote-upload" class="hidden">
                                 <label for="quote" class="block text-sm font-medium text-slate-700">Quote / Estimate <span class="text-red-500">*</span></label>
-                                <input type="file" id="quote" name="quote" class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border file:border-slate-300 file:text-sm file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 cursor-pointer">
+                                <input type="file" id="quote" name="quote" accept=".pdf,.png,.jpg,.jpeg" class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border file:border-slate-300 file:text-sm file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 cursor-pointer">
                                 <p class="mt-1 text-xs text-slate-500">Required for Pre-Approval / School Payment requests. Show vendor, items, and total cost.</p>
                             </div>
                              <div id="preapproval-upload" class="hidden">
                                 <label for="pre-approval" class="block text-sm font-medium text-slate-700">Pre-Approval Documentation <span class="text-red-500">*</span></label>
-                                <input type="file" id="pre-approval" name="preApproval" class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border file:border-slate-300 file:text-sm file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 cursor-pointer">
+                                <input type="file" id="pre-approval" name="preApproval" accept=".pdf,.png,.jpg,.jpeg" class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border file:border-slate-300 file:text-sm file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 cursor-pointer">
                                 <p class="mt-1 text-xs text-slate-500">Required for Tiers 2 & 3. Attach the email or document showing prior approval from Admin (and Board for Tier 3).</p>
                             </div>
                         </div>
@@ -376,7 +439,9 @@
             <!-- <div id="check-status" class="tab-content"></div> -->
 
 
-             <!-- Pending Approvals Tab (Secure) -->
+             <!-- ========================= -->
+             <!-- PENDING APPROVALS TAB     -->
+             <!-- ========================= -->
             <div id="pending-approvals" class="tab-content hidden">
                  <h2 class="text-3xl font-bold text-slate-900 mb-6">My Pending Approvals</h2>
                  <div id="approvals-list" class="space-y-6">
@@ -385,7 +450,9 @@
                  </div>
             </div>
 
-            <!-- Admin Dashboard Tab (Secure) -->
+            <!-- ========================= -->
+            <!--   ADMIN DASHBOARD TAB     -->
+            <!-- ========================= -->
             <div id="admin-dashboard" class="tab-content hidden">
                  <h2 class="text-3xl font-bold text-slate-900 mb-6">Admin Dashboard: All Approved / Paid Requests</h2>
                   <div class="mb-4 text-sm text-slate-600">View approved requests awaiting payment and recently completed payments.</div>
@@ -395,7 +462,9 @@
                  </div>
             </div>
 
-            <!-- Summary & Analytics Tab (Secure) -->
+            <!-- ========================= -->
+            <!-- SUMMARY & ANALYTICS TAB   -->
+            <!-- ========================= -->
             <div id="summary-analytics" class="tab-content hidden">
                 <h2 class="text-3xl font-bold text-slate-900 mb-6">Summary & Analytics</h2>
                 <div id="analytics-content" class="space-y-6">
@@ -418,6 +487,11 @@
         // --- CONFIGURATION ---
         const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzD0IJtgmaKSEXu45UiPdQBMSOgLM4vUPlLHBszKpoidTy1AveJS_rF_z7KK1H9RYe8bg/exec'; // User provided URL
         const CLIENT_ID = "14216824305-v19ecsmrhk1muaglrlhjceqjk5oeqr4n.apps.googleusercontent.com"; // From parent portal
+        const MAX_FILE_SIZE_MB = 10;
+        const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+        const ALLOWED_FILE_TYPES = ['application/pdf', 'image/png', 'image/jpeg', 'image/jpg'];
+        const ALLOWED_EXTENSIONS = ['.pdf', '.png', '.jpg', '.jpeg'];
+
         let ID_TOKEN = null;
         let USER_PROFILE = null; // Store user profile info { name, email, isAdmin }
         let TIER_LIMITS = { tier1: 200, tier2: 1000, tier3: 5000 }; // Default, updated on load
@@ -485,8 +559,8 @@
                      bgColor = 'bg-blue-100'; textColor = 'text-blue-800'; borderColor = 'border-blue-300'; icon = 'ph-info';
             }
 
-            messageDiv.className = `p-4 mb-4 text-sm rounded-lg border shadow-md ${bgColor} ${textColor} ${borderColor} flex items-center`;
-            messageDiv.innerHTML = `<i class="${icon} text-xl mr-2 flex-shrink-0"></i> <span>${text}</span>`;
+            messageDiv.className = `p-4 mb-4 text-sm rounded-lg border shadow-md ${bgColor} ${textColor} ${borderColor} flex items-start`; // Use items-start
+            messageDiv.innerHTML = `<i class="${icon} text-xl mr-2 flex-shrink-0 mt-0.5"></i> <span>${text}</span>`; // Added mt-0.5 to icon
             messageContainer.appendChild(messageDiv);
 
             setTimeout(() => {
@@ -497,7 +571,10 @@
         }
 
          function formatCurrency(amount) {
-            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
+             // Ensure amount is a number before formatting
+             const numAmount = Number(amount);
+             if (isNaN(numAmount)) return '$--.--'; // Or some placeholder
+            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(numAmount);
         }
 
         function cleanUrlParams() {
@@ -540,7 +617,8 @@
 
             // Fetch secure data
             fetchApproverData();
-            fetchAnalyticsData(); // Fetch analytics only after login
+             // Fetch analytics only after login (will check isAdmin internally)
+            fetchAnalyticsData();
 
              // Switch to a relevant tab if needed, e.g., approvals
              switchToTab('pending-approvals'); // Default to approvals tab after login
@@ -549,9 +627,18 @@
         }
 
         function handleSignOut() {
+             if (!USER_PROFILE || !USER_PROFILE.email) {
+                 console.warn("Attempted sign out without user profile.");
+                 // Force UI update anyway
+                  ID_TOKEN = null;
+                  USER_PROFILE = null;
+                  updateLoginUI(false);
+                  switchToTab('policy');
+                 return;
+             }
             google.accounts.id.disableAutoSelect();
              google.accounts.id.revoke(USER_PROFILE.email, done => {
-                console.log('Consent revoked.');
+                console.log('Google Sign-In consent revoked.');
              });
             ID_TOKEN = null;
             USER_PROFILE = null;
@@ -568,10 +655,16 @@
                 signInButtonDiv.classList.add('hidden');
                 signOutButton.classList.remove('hidden');
 
-                // Show secure tabs based on isAdmin (determined by backend)
-                secureTabButtons.forEach(btn => btn.classList.toggle('hidden', !USER_PROFILE?.isAdmin)); // Show admin/analytics if isAdmin
-                 // Approvals tab visible if admin OR board member (we assume backend checks this)
+                // Show/Hide secure tabs based on isAdmin (determined by backend via fetchApproverData)
+                // Note: USER_PROFILE.isAdmin might not be set immediately after login, fetchApproverData updates it
+                const isAdmin = USER_PROFILE?.isAdmin || false; // Default to false if not yet known
+                secureTabButtons.forEach(btn => {
+                    const isAdminOnly = btn.id === 'tab-btn-admin' || btn.id === 'tab-btn-analytics';
+                    btn.classList.toggle('hidden', isAdminOnly && !isAdmin);
+                });
+                 // Approvals tab is always shown if logged in (backend handles who sees what)
                  document.getElementById('tab-btn-approvals').classList.remove('hidden');
+
 
             } else {
                 userInfoDiv.classList.add('hidden');
@@ -588,18 +681,38 @@
 
         // --- TABS ---
         function switchToTab(tabId) {
-            tabButtons.forEach(button => {
-                button.classList.toggle('tab-active', button.dataset.tab === tabId);
-                 button.classList.toggle('text-slate-600', button.dataset.tab !== tabId); // Ensure non-active are grey
-            });
-            tabContents.forEach(content => {
-                content.classList.toggle('tab-content-active', content.id === tabId);
-                 content.classList.toggle('hidden', content.id !== tabId); // Explicitly hide others
-            });
-             // Special handling for secure tabs if user is not logged in
+            // Ensure valid tabId
+            const validTabs = ['policy', 'new-request', 'pending-approvals', 'admin-dashboard', 'summary-analytics'];
+            if (!validTabs.includes(tabId)) {
+                console.warn(`Invalid tab ID requested: ${tabId}. Defaulting to policy.`);
+                tabId = 'policy';
+            }
+
+            // Special handling for secure tabs if user is not logged in or not admin
              if (!ID_TOKEN && (tabId === 'pending-approvals' || tabId === 'admin-dashboard' || tabId === 'summary-analytics')) {
-                  switchToTab('policy'); // Redirect to policy if trying to access secure tab while logged out
+                  showMessage('error', 'Please sign in to access this section.');
+                  switchToTab('policy'); // Redirect to policy
+                  return; // Stop further processing
              }
+              if (ID_TOKEN && !USER_PROFILE?.isAdmin && (tabId === 'admin-dashboard' || tabId === 'summary-analytics')) {
+                  showMessage('error', 'Admin privileges required for this section.');
+                   switchToTab('pending-approvals'); // Redirect admin-only attempts to approvals
+                  return; // Stop further processing
+             }
+
+
+            tabButtons.forEach(button => {
+                // Only toggle active state if the button corresponds to the target tab
+                button.classList.toggle('tab-active', button.dataset.tab === tabId);
+                 button.classList.toggle('text-slate-600', button.dataset.tab !== tabId);
+            });
+
+            tabContents.forEach(content => {
+                // Only show the content if its ID matches the target tab
+                content.classList.toggle('tab-content-active', content.id === tabId);
+                 content.classList.toggle('hidden', content.id !== tabId);
+            });
+
              cleanUrlParams(); // Clean URL when switching tabs
         }
 
@@ -610,18 +723,23 @@
             let message = "";
             let canSubmit = true; // Flag to enable/disable submission
 
-            if (amount > 0 && amount <= TIER_LIMITS.tier1) {
+             // Use precise values from TIER_LIMITS
+             const tier1Max = TIER_LIMITS.tier1;
+             const tier2Max = TIER_LIMITS.tier2;
+             const tier3Max = TIER_LIMITS.tier3;
+
+            if (amount > 0 && amount <= tier1Max) {
                 tier = 1;
-                message = `<strong>Tier 1:</strong> No pre-approval needed for amounts up to ${formatCurrency(TIER_LIMITS.tier1)}. Requires receipt for reimbursement.`;
-            } else if (amount > TIER_LIMITS.tier1 && amount <= TIER_LIMITS.tier2) {
+                message = `<strong>Tier 1:</strong> No pre-approval needed for amounts up to ${formatCurrency(tier1Max)}. Requires receipt for reimbursement.`;
+            } else if (amount > tier1Max && amount <= tier2Max) {
                 tier = 2;
                 message = `<strong>Tier 2:</strong> Requires <strong>Admin pre-approval BEFORE purchase</strong>. Attach pre-approval proof and quote (for school payment) or receipt (for reimbursement).`;
-            } else if (amount > TIER_LIMITS.tier2 && amount <= TIER_LIMITS.tier3) {
+            } else if (amount > tier2Max && amount <= tier3Max) {
                 tier = 3;
                 message = `<strong>Tier 3:</strong> Requires <strong>Admin AND Board pre-approval BEFORE purchase</strong>. Payment MUST be made via school account (select School Payment Request). Attach pre-approval proof and quote.`;
-            } else if (amount > TIER_LIMITS.tier3) {
+            } else if (amount > tier3Max) {
                 tier = 4; // Special case for > Tier 3
-                message = `<strong>Amount exceeds Tier 3 limit (${formatCurrency(TIER_LIMITS.tier3)})</strong>. This portal cannot be used. Please email <a href="mailto:bod@svamail.com" class="font-medium text-teal-600 hover:underline">bod@svamail.com</a> directly with justification and quotes.`;
+                message = `<strong>Amount exceeds Tier 3 limit (${formatCurrency(tier3Max)})</strong>. This portal cannot be used. Please email <a href="mailto:bod@svamail.com" class="font-medium text-teal-600 hover:underline">bod@svamail.com</a> directly with justification and quotes.`;
                 canSubmit = false; // Disable submission
             } else {
                  tierInfoDiv.classList.add('hidden');
@@ -658,7 +776,7 @@
 
             // Reset visibility and required status
             [receiptUploadDiv, quoteUploadDiv, preApprovalUploadDiv].forEach(div => div.classList.add('hidden'));
-            [receiptInput, quoteInput, preApprovalInput].forEach(input => input.required = false);
+            [receiptInput, quoteInput, preApprovalInput].forEach(input => {input.required = false; input.value = ''; /* Clear file input */ }); // Clear previous selection
             paymentMethodContainer.classList.add('hidden');
             paymentMethodSelect.required = false;
 
@@ -685,7 +803,11 @@
             } else if (requestType === 'preapproval') { // Covers both Pre-Approval and School Payment Request scenarios
                 needsQuote = true;
                  if (tier === 2 || tier === 3) {
-                    needsPreApprovalDoc = true; // Still need pre-approval doc even if requesting initial approval here? Policy clarification needed. Assume YES for now.
+                     // For pre-approval requests, the pre-approval doc is generated *after*, so it's not required *during* submission
+                     // Let's assume preApproval is needed *if* this submission is for the actual payment *after* pre-approval.
+                     // The logic might need refinement based on exact workflow.
+                     // Let's make it required for Tier 2/3 school payment request.
+                     needsPreApprovalDoc = true;
                  }
                  // Allow selecting payment method, but enforce School Account for Tier 3
                  paymentMethodSelect.disabled = false;
@@ -711,8 +833,76 @@
 
         }
 
+         // --- NEW: File Validation Function ---
+         function validateFiles() {
+             const filesToValidate = [
+                 { input: receiptInput, label: "Receipt" },
+                 { input: quoteInput, label: "Quote" },
+                 { input: preApprovalInput, label: "Pre-Approval Doc" }
+             ];
+
+             for (const item of filesToValidate) {
+                 // Check only if the input is required and visible
+                 if (item.input.required && !item.input.closest('div').classList.contains('hidden')) {
+                     if (item.input.files.length === 0) {
+                         showMessage('error', `Missing required file: ${item.label}.`);
+                         return false; // Missing required file
+                     }
+
+                     const file = item.input.files[0];
+
+                     // 1. Check File Type (MIME type or extension)
+                     const fileType = file.type;
+                     const fileName = file.name.toLowerCase();
+                     const fileExtension = fileName.substring(fileName.lastIndexOf('.'));
+
+                     const isValidType = ALLOWED_FILE_TYPES.includes(fileType) || ALLOWED_EXTENSIONS.includes(fileExtension);
+
+                     if (!isValidType) {
+                         showMessage('error', `Invalid file type for ${item.label}: "${fileName}". Allowed types: PDF, PNG, JPG, JPEG.`);
+                         return false;
+                     }
+
+                     // 2. Check File Size
+                     if (file.size > MAX_FILE_SIZE_BYTES) {
+                         showMessage('error', `File size limit exceeded for ${item.label}: "${fileName}" (${(file.size / 1024 / 1024).toFixed(1)}MB). Max size: ${MAX_FILE_SIZE_MB}MB.`);
+                         return false;
+                     }
+                 } else if (!item.input.closest('div').classList.contains('hidden') && item.input.files.length > 0) {
+                     // Validate optional files if they are selected
+                      const file = item.input.files[0];
+                      const fileType = file.type;
+                      const fileName = file.name.toLowerCase();
+                      const fileExtension = fileName.substring(fileName.lastIndexOf('.'));
+                      const isValidType = ALLOWED_FILE_TYPES.includes(fileType) || ALLOWED_EXTENSIONS.includes(fileExtension);
+                       if (!isValidType) {
+                         showMessage('error', `Invalid file type for ${item.label}: "${fileName}". Allowed types: PDF, PNG, JPG, JPEG.`);
+                         return false;
+                     }
+                      if (file.size > MAX_FILE_SIZE_BYTES) {
+                         showMessage('error', `File size limit exceeded for ${item.label}: "${fileName}" (${(file.size / 1024 / 1024).toFixed(1)}MB). Max size: ${MAX_FILE_SIZE_MB}MB.`);
+                         return false;
+                     }
+                 }
+             }
+             return true; // All required and selected optional files are valid
+         }
+
+
         function handleFormSubmit(event) {
             event.preventDefault();
+
+             // --- ADD FILE VALIDATION CALL ---
+             if (!validateFiles()) {
+                 // Re-enable button immediately if validation fails client-side
+                 submitBtn.disabled = false;
+                 submitBtn.innerHTML = '<i class="ph-paper-plane-tilt mr-2"></i> Submit Request';
+                  if (typeof phosphor !== 'undefined') phosphor.replace();
+                 return; // Stop submission
+             }
+             // --- END FILE VALIDATION ---
+
+
             showLoading();
             submitBtn.disabled = true;
             submitBtn.textContent = 'Submitting...';
@@ -723,22 +913,26 @@
                 formData.append('action', 'submitRequest');
              }
 
-            // Log FormData contents for debugging
-             // for (let [key, value] of formData.entries()) {
-             //     if (value instanceof File) {
-             //         console.log(`${key}: File(${value.name}, size=${value.size}, type=${value.type})`);
-             //     } else {
-             //         console.log(`${key}: ${value}`);
-             //     }
-             // }
-
+            // Log FormData contents for debugging (optional)
+            // console.log("Submitting FormData:");
+            // for (let [key, value] of formData.entries()) {
+            //     if (value instanceof File) {
+            //         console.log(`${key}: File(${value.name}, size=${value.size}, type=${value.type})`);
+            //     } else {
+            //         console.log(`${key}: ${value}`);
+            //     }
+            // }
 
             fetch(WEB_APP_URL, {
                 method: 'POST',
                 body: formData, // Send as FormData
-                // mode: 'no-cors' // Use 'no-cors' only if backend handles it correctly and you don't need the response content
             })
-            .then(response => response.json()) // Assuming backend sends JSON response
+            .then(response => {
+                if (!response.ok) { // Check for HTTP errors (like 500, 404)
+                     throw new Error(`Network response was not ok (${response.status})`);
+                }
+                return response.json(); // Assuming backend sends JSON response
+            })
             .then(data => {
                 if (data.status === 'success') {
                     showMessage('success', `Request submitted successfully! Your Request ID is: ${data.requestId}`);
@@ -746,7 +940,7 @@
                     // Reset tier info and dependent fields
                     updateTierInfo(0);
                 } else {
-                    throw new Error(data.message || 'Submission failed. Unknown error.');
+                    throw new Error(data.message || 'Submission failed. Unknown error from backend.');
                 }
             })
             .catch(error => {
@@ -781,6 +975,8 @@
                 .catch(error => {
                     console.error('Error fetching public data:', error);
                     showMessage('error', `Could not load configuration: ${error.message}`);
+                    // Set default tiers display on error?
+                     updateTierLimitsDisplay(); // Update with defaults on error
                 })
                  .finally(() => hideLoading()); // Ensure loading is hidden even on error
         }
@@ -788,6 +984,10 @@
          function fetchApproverData() {
             if (!ID_TOKEN) return; // Don't fetch if not logged in
             showLoading();
+             // Clear previous data while loading
+             renderPendingApprovals([]);
+             renderAdminTasks([]);
+
             fetch(`${WEB_APP_URL}?action=getApproverData&token=${ID_TOKEN}`)
                 .then(response => response.json())
                 .then(data => {
@@ -795,6 +995,7 @@
                         // Store admin status in the user profile
                         if (USER_PROFILE) {
                            USER_PROFILE.isAdmin = data.isAdmin;
+                           USER_PROFILE.myApprovals = data.myApprovals; // Store approvals for modal
                         }
                         renderPendingApprovals(data.myApprovals);
                         if (data.isAdmin) {
@@ -815,8 +1016,11 @@
                 .catch(error => {
                     console.error('Error fetching approver data:', error);
                     showMessage('error', `Could not load your data: ${error.message}`);
+                    // Clear data displays on error
+                     renderPendingApprovals(null); // Pass null to show error message
+                     renderAdminTasks(null);
                     // If token is invalid, sign out
-                    if (error.message.includes("failed") || error.message.includes("invalid")) {
+                    if (error.message.includes("failed") || error.message.includes("invalid") || error.message.includes("Token expired")) {
                         handleSignOut();
                     }
                 })
@@ -824,8 +1028,13 @@
         }
 
          function fetchAnalyticsData() {
-             if (!ID_TOKEN || !USER_PROFILE?.isAdmin) return; // Only fetch if logged in as admin
+             if (!ID_TOKEN || !USER_PROFILE?.isAdmin) {
+                 document.getElementById('analytics-content').innerHTML = ''; // Clear if not admin
+                 return; // Only fetch if logged in as admin
+             }
              showLoading();
+             document.getElementById('analytics-content').innerHTML = '<p class="text-slate-500">Loading analytics data...</p>'; // Loading message
+
              fetch(`${WEB_APP_URL}?action=getAnalyticsData&token=${ID_TOKEN}`)
                  .then(response => response.json())
                  .then(data => {
@@ -872,6 +1081,10 @@
 
          function renderPendingApprovals(approvals) {
              const listDiv = document.getElementById('approvals-list');
+             if (approvals === null) { // Handle explicit error case
+                 listDiv.innerHTML = '<p class="text-red-500">Could not load pending approvals.</p>';
+                 return;
+             }
              if (!approvals || approvals.length === 0) {
                  listDiv.innerHTML = '<p class="text-slate-500">You have no pending approvals.</p>';
                  return;
@@ -886,7 +1099,7 @@
                  const now = new Date();
                  const submissionDate = new Date(req.submission_date);
                  const daysPending = Math.floor((now - submissionDate) / (1000 * 60 * 60 * 24));
-                 const showOverride = USER_PROFILE?.isAdmin && daysPending > 5;
+                 const showOverride = USER_PROFILE?.isAdmin && daysPending > 5 && (req.status === 'Pending Admin Approval' || req.status === 'Pending Board Approval');
 
                  return `
                  <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
@@ -920,6 +1133,10 @@
 
         function renderAdminTasks(tasks) {
             const listDiv = document.getElementById('admin-tasks-list');
+             if (tasks === null) { // Handle explicit error case
+                 listDiv.innerHTML = '<p class="text-red-500">Could not load admin tasks.</p>';
+                 return;
+             }
              if (!tasks || tasks.length === 0) {
                  listDiv.innerHTML = '<p class="text-slate-500">No approved requests awaiting payment or recently paid.</p>';
                  return;
@@ -985,34 +1202,69 @@
 
              let categoryHtml = '<p class="text-slate-500">No category data available.</p>';
              if (summary.categorySummary && summary.categorySummary.length > 0) {
-                 categoryHtml = '<ul class="list-disc list-inside space-y-1">';
+                 // Use a table for better alignment on mobile/desktop
+                 categoryHtml = `
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-slate-200">
+                            <thead class="bg-slate-50">
+                                <tr>
+                                    <th scope="col" class="px-4 py-2 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Category</th>
+                                    <th scope="col" class="px-4 py-2 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Total Spent</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-slate-200 text-sm">`;
                  summary.categorySummary.forEach(cat => {
-                     categoryHtml += `<li>${cat.name}: ${formatCurrency(cat.total)}</li>`;
+                     categoryHtml += `
+                                <tr>
+                                    <td class="px-4 py-2 whitespace-nowrap text-slate-700">${cat.name}</td>
+                                    <td class="px-4 py-2 whitespace-nowrap text-slate-700 text-right font-medium">${formatCurrency(cat.total)}</td>
+                                </tr>`;
                  });
-                 categoryHtml += '</ul>';
+                 categoryHtml += `
+                            </tbody>
+                        </table>
+                    </div>`;
              }
 
              let monthlyHtml = '<p class="text-slate-500">No monthly data available.</p>';
              if (summary.monthlySummary && summary.monthlySummary.length > 0) {
-                 monthlyHtml = '<ul class="list-disc list-inside space-y-1">';
+                  monthlyHtml = `
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-slate-200">
+                            <thead class="bg-slate-50">
+                                <tr>
+                                    <th scope="col" class="px-4 py-2 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Month</th>
+                                    <th scope="col" class="px-4 py-2 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">Requests</th>
+                                    <th scope="col" class="px-4 py-2 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Total Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-slate-200 text-sm">`;
                  summary.monthlySummary.forEach(month => {
-                     monthlyHtml += `<li>${month.month}: ${month.count} requests totaling ${formatCurrency(month.totalAmount)}</li>`;
+                     monthlyHtml += `
+                                <tr>
+                                    <td class="px-4 py-2 whitespace-nowrap text-slate-700">${month.month}</td>
+                                    <td class="px-4 py-2 whitespace-nowrap text-slate-700 text-center">${month.count}</td>
+                                    <td class="px-4 py-2 whitespace-nowrap text-slate-700 text-right font-medium">${formatCurrency(month.totalAmount)}</td>
+                                </tr>`;
                  });
-                 monthlyHtml += '</ul>';
+                 monthlyHtml += `
+                            </tbody>
+                        </table>
+                    </div>`;
              }
 
 
              contentDiv.innerHTML = `
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                     <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                     <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200 text-center sm:text-left">
                          <h4 class="text-sm font-medium text-slate-500 uppercase">Total Requests</h4>
                          <p class="text-3xl font-bold text-slate-800 mt-1">${summary.totalRequests}</p>
                      </div>
-                     <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                     <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200 text-center sm:text-left">
                          <h4 class="text-sm font-medium text-slate-500 uppercase">Total Approved Spend</h4>
                          <p class="text-3xl font-bold text-slate-800 mt-1">${formatCurrency(summary.totalAmountApproved)}</p>
                      </div>
-                     <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                     <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200 text-center sm:text-left">
                          <h4 class="text-sm font-medium text-slate-500 uppercase">Total Paid Out</h4>
                          <p class="text-3xl font-bold text-slate-800 mt-1">${formatCurrency(summary.totalAmountIssued)}</p>
                      </div>
@@ -1034,8 +1286,8 @@
         // --- APPROVAL/ADMIN ACTIONS ---
 
          function openApprovalModal(requestId, decision) {
-             // Fetch basic details (optional, could pass from button)
-             const approvalItem = USER_PROFILE?.myApprovals?.find(a => a.id === requestId); // Assuming myApprovals stored in USER_PROFILE
+             // Fetch basic details from stored USER_PROFILE data
+             const approvalItem = USER_PROFILE?.myApprovals?.find(a => a.id === requestId);
              document.getElementById('modal-request-id').textContent = requestId;
              document.getElementById('modal-submitter').textContent = approvalItem?.submitter || 'N/A';
              document.getElementById('modal-amount').textContent = formatCurrency(approvalItem?.amount || 0);
@@ -1045,19 +1297,22 @@
               // Store decision and ID for later use
               const modal = document.getElementById('approval-modal');
               modal.dataset.requestId = requestId;
-              modal.dataset.decision = decision; // Store initial decision (approve/reject/override)
 
-              // Adjust buttons based on decision type if needed (e.g., hide reject for override)
-               document.getElementById('modal-approve-btn').dataset.decision = 'approved';
-               document.getElementById('modal-reject-btn').dataset.decision = 'rejected';
-               // If it's an override, perhaps change approve button text?
+              // Reset buttons and set correct decision target
+              const approveBtn = document.getElementById('modal-approve-btn');
+              const rejectBtn = document.getElementById('modal-reject-btn');
+              approveBtn.textContent = 'Approve';
+              approveBtn.dataset.decision = 'approved';
+              rejectBtn.classList.remove('hidden');
+
                if (decision === 'admin_override') {
-                   document.getElementById('modal-approve-btn').textContent = 'Confirm Override';
-                   document.getElementById('modal-approve-btn').dataset.decision = 'admin_override'; // Set override decision
-                   document.getElementById('modal-reject-btn').classList.add('hidden'); // Hide reject for override
-               } else {
-                   document.getElementById('modal-approve-btn').textContent = 'Approve';
-                   document.getElementById('modal-reject-btn').classList.remove('hidden');
+                   approveBtn.textContent = 'Confirm Override';
+                   approveBtn.dataset.decision = 'admin_override'; // Set override decision
+                   rejectBtn.classList.add('hidden'); // Hide reject for override
+               } else if (decision === 'rejected') {
+                    // Pre-setting decision doesn't make sense here as modal has both buttons
+               } else { // 'approved' or default case
+                    // Already set above
                }
 
 
@@ -1068,12 +1323,15 @@
               document.getElementById('approval-modal').classList.remove('modal-active');
               // Clear stored data
               delete document.getElementById('approval-modal').dataset.requestId;
-              delete document.getElementById('approval-modal').dataset.decision;
+             // Reset approve button text and visibility of reject button
+              document.getElementById('modal-approve-btn').textContent = 'Approve';
+              document.getElementById('modal-reject-btn').classList.remove('hidden');
+
          }
 
          function handleApprovalAction(event) {
              const button = event.target.closest('button');
-             if (!button) return;
+             if (!button || button.id === 'modal-cancel-btn') return;
 
              const finalDecision = button.dataset.decision; // 'approved', 'rejected', or 'admin_override'
              const modal = document.getElementById('approval-modal');
@@ -1088,7 +1346,7 @@
              }
 
              showLoading();
-             closeApprovalModal();
+             closeApprovalModal(); // Close modal immediately
 
              const payload = {
                  action: 'submitApproval',
@@ -1145,7 +1403,7 @@
              if (!requestId) return;
 
               showLoading();
-              closeCheckIssueModal();
+              closeCheckIssueModal(); // Close modal immediately
 
               const payload = {
                  action: 'issueCheck',
@@ -1197,31 +1455,37 @@
                   updateFormRequirements(parseInt(tierInput.value) || 0, e.target.value);
              });
 
-             // Payment Method changes (optional, might affect requirements later)
-            // paymentMethodSelect.addEventListener('change', (e) => {
-                // updateFormRequirements(parseInt(tierInput.value) || 0, requestTypeSelect.value);
-            // });
-
-             // Approval Modal Buttons
+             // Approval Modal Interaction
              document.getElementById('approvals-list').addEventListener('click', (event) => {
                  const button = event.target.closest('button.approve-btn, button.reject-btn, button.override-btn');
                  if (button) {
+                      event.stopPropagation(); // Prevent potential background clicks
                      openApprovalModal(button.dataset.id, button.dataset.decision);
                  }
              });
              document.getElementById('modal-cancel-btn').addEventListener('click', closeApprovalModal);
              document.getElementById('modal-approve-btn').addEventListener('click', handleApprovalAction);
              document.getElementById('modal-reject-btn').addEventListener('click', handleApprovalAction);
+              // Close modal if clicking outside the content
+              document.getElementById('approval-modal').addEventListener('click', (event) => {
+                 if (event.target === event.currentTarget) { closeApprovalModal(); }
+              });
 
-              // Check Issue Modal Buttons
+
+              // Check Issue Modal Interaction
               document.getElementById('admin-tasks-list').addEventListener('click', (event) => {
                  const button = event.target.closest('button.issue-check-btn');
                  if (button) {
+                      event.stopPropagation();
                      openCheckIssueModal(button.dataset.id, button.dataset.amount, button.dataset.submitter);
                  }
               });
              document.getElementById('check-modal-cancel-btn').addEventListener('click', closeCheckIssueModal);
              document.getElementById('check-modal-confirm-btn').addEventListener('click', handleIssueCheck);
+             // Close modal if clicking outside the content
+             document.getElementById('check-issue-modal').addEventListener('click', (event) => {
+                 if (event.target === event.currentTarget) { closeCheckIssueModal(); }
+              });
 
 
         }
