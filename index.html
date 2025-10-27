@@ -86,6 +86,9 @@
           }
            .policy-tier h4 { margin-bottom: 0.5rem; /* mb-2 */ }
            .policy-tier ul { margin-top: 0.75rem; /* mt-3 */ }
+           .policy-tier li { margin-bottom: 0.5rem; /* mb-2 */ } /* Added margin between list items */
+           .policy-tier .sub-list { list-style-type: circle; margin-left: 1rem; /* ml-4 */ font-size: 0.75rem; /* text-xs */ } /* Styling for nested lists */
+
 
     </style>
 </head>
@@ -193,109 +196,73 @@
                 <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
                     <h3 class="text-xl font-semibold text-slate-800 mb-3 flex items-center"><i class="ph-info text-blue-600 mr-2 text-2xl"></i> Overview</h3>
                     <p class="text-slate-600 text-sm leading-relaxed">
-                        This policy outlines the procedures for requesting reimbursement or pre-approval for purchases made on behalf of Silicon Valley Academy (SVA). Adherence to this policy ensures timely processing and responsible use of school funds. All requests must be submitted through this portal unless otherwise specified.
+                        This portal handles SVA expense pre-approvals and reimbursements. Following these tiers ensures compliance and timely processing. Submit requests here unless the expense exceeds Tier 3 limits.
                     </p>
                      <p class="text-slate-600 text-sm leading-relaxed mt-2">
-                        For policy questions, please contact <a href="mailto:admin@svamail.com" class="text-teal-600 hover:underline font-medium">admin@svamail.com</a>. For technical issues with the portal, contact the administrator.
+                        Questions? Contact <a href="mailto:admin@svamail.com" class="text-teal-600 hover:underline font-medium">admin@svamail.com</a>.
                     </p>
                 </div>
 
                 <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
-                     <h3 class="text-xl font-semibold text-slate-800 mb-4 flex items-center"><i class="ph-stack text-blue-600 mr-2 text-2xl"></i> Expense Tiers & Approval Workflow</h3>
+                     <h3 class="text-xl font-semibold text-slate-800 mb-4 flex items-center"><i class="ph-stack text-blue-600 mr-2 text-2xl"></i> Expense Tiers & Approvals</h3>
                      <div class="space-y-6">
 
                          <!-- Tier 1 -->
                         <div class="policy-tier border-l-blue-500">
                             <h4 class="font-bold text-lg text-blue-800">Tier 1: Up to $<span class="tier-limit" data-tier="1">200.00</span></h4>
-                            <ul class="list-disc list-inside text-sm text-slate-700 mt-2 space-y-2">
-                                <li><strong>Purpose:</strong> Routine, small-dollar expenses (e.g., standard classroom supplies, minor replacements).</li>
-                                <li><strong>Pre-Approval:</strong> <strong class="text-green-700">Not required.</strong></li>
-                                <li><strong>Payment Method:</strong>
-                                    <ul class="list-circle list-inside ml-4 text-xs">
-                                        <li><strong class="text-indigo-700">Personal Funds (Reimbursement):</strong> Preferred method. Submit request via portal *after* purchase.</li>
-                                        <li><strong class="text-gray-600">School Account:</strong> Generally discouraged for Tier 1. If necessary, requires justification and may need informal admin consent prior to request. Submit as "School Payment Request".</li>
-                                    </ul>
-                                </li>
-                                <li><strong>Documentation:</strong>
-                                    <ul class="list-circle list-inside ml-4 text-xs">
-                                        <li>For Reimbursement: Clear, itemized <strong class="text-red-600">Receipt/Invoice</strong> showing vendor, date, items purchased, amount paid, and proof of payment.</li>
-                                         <li>For School Payment: Vendor <strong class="text-red-600">Quote/Invoice</strong>.</li>
-                                    </ul>
-                                </li>
-                                <li><strong>Portal Process:</strong> Submit "New Request". Reimbursements are typically auto-approved if documentation is valid and within budget. School Payment requests route to Admin.</li>
+                            <ul class="list-disc list-inside text-sm text-slate-700">
+                                <li><strong>Purpose:</strong> Routine small expenses (e.g., classroom supplies).</li>
+                                <li><strong>Pre-Approval:</strong> <strong class="text-green-700">None required.</strong></li>
+                                <li><strong>Payment:</strong> Personal funds (reimbursement preferred) or School Account (discouraged, needs justification).</li>
+                                <li><strong>Docs:</strong> <strong class="text-red-600">Receipt</strong> (for reimbursement) or <strong class="text-red-600">Quote</strong> (for school payment).</li>
+                                <li><strong>Process:</strong> Submit via portal. Reimbursements usually auto-approved; School Payments route to Admin.</li>
                             </ul>
                         </div>
 
                          <!-- Tier 2 -->
                         <div class="policy-tier border-l-yellow-500">
                             <h4 class="font-bold text-lg text-yellow-800">Tier 2: $<span class="tier-limit" data-tier="1-plus">200.01</span> - $<span class="tier-limit" data-tier="2">1000.00</span></h4>
-                             <ul class="list-disc list-inside text-sm text-slate-700 mt-2 space-y-2">
-                                <li><strong>Purpose:</strong> Moderate expenses (e.g., larger supply orders, small equipment, event costs).</li>
-                                <li><strong>Pre-Approval:</strong> <strong class="text-red-600">Required BEFORE purchase.</strong> Obtain written approval (e.g., email) from a designated School Administrator.</li>
-                                <li><strong>Payment Method:</strong>
-                                    <ul class="list-circle list-inside ml-4 text-xs">
-                                        <li><strong class="text-indigo-700">Personal Funds (Reimbursement):</strong> Allowed only *after* obtaining Admin pre-approval.</li>
-                                        <li><strong class="text-gray-600">School Account:</strong> Allowed only *after* obtaining Admin pre-approval.</li>
-                                    </ul>
-                                </li>
-                                 <li><strong>Documentation:</strong>
-                                    <ul class="list-circle list-inside ml-4 text-xs">
-                                         <li><strong class="text-red-600">Admin Pre-Approval Proof:</strong> Attach the email or document showing explicit approval.</li>
-                                         <li>For Reimbursement: Final, itemized <strong class="text-red-600">Receipt/Invoice</strong>.</li>
-                                         <li>For School Payment: Vendor <strong class="text-red-600">Quote/Invoice</strong>.</li>
-                                    </ul>
-                                </li>
-                                <li><strong>Portal Process:</strong> Submit "New Request". Attach all required documents. Routes to Admin for formal approval within the portal (even with prior email approval).</li>
+                             <ul class="list-disc list-inside text-sm text-slate-700">
+                                <li><strong>Purpose:</strong> Moderate expenses (e.g., larger supplies, small equipment).</li>
+                                <li><strong>Pre-Approval:</strong> <strong class="text-red-600">Admin approval REQUIRED BEFORE purchase</strong> (via email/written form).</li>
+                                <li><strong>Payment:</strong> Personal funds or School Account, <strong class="text-red-600">only after</strong> pre-approval.</li>
+                                 <li><strong>Docs:</strong> <strong class="text-red-600">Admin Pre-Approval Proof</strong> + (<strong class="text-red-600">Receipt</strong> for reimbursement OR <strong class="text-red-600">Quote</strong> for school payment).</li>
+                                <li><strong>Process:</strong> Submit via portal with all docs. Routes to Admin for final portal approval.</li>
                              </ul>
                         </div>
 
                          <!-- Tier 3 -->
                         <div class="policy-tier border-l-orange-600">
                             <h4 class="font-bold text-lg text-orange-800">Tier 3: $<span class="tier-limit" data-tier="2-plus">1000.01</span> - $<span class="tier-limit" data-tier="3">5000.00</span></h4>
-                             <ul class="list-disc list-inside text-sm text-slate-700 mt-2 space-y-2">
-                                 <li><strong>Purpose:</strong> Significant expenses (e.g., major equipment, software licenses, larger event contracts).</li>
-                                 <li><strong>Pre-Approval:</strong> <strong class="text-red-600">Required BEFORE purchase.</strong> Obtain written approval from BOTH a School Administrator AND a designated Board Member.</li>
-                                 <li><strong>Payment Method:</strong>
-                                    <ul class="list-circle list-inside ml-4 text-xs">
-                                        <li><strong class="text-gray-600">School Account ONLY.</strong> Personal funds are <strong class="text-red-700">NOT permitted</strong> for Tier 3 purchases (no reimbursement).</li>
-                                    </ul>
-                                 </li>
-                                 <li><strong>Documentation:</strong>
-                                    <ul class="list-circle list-inside ml-4 text-xs">
-                                         <li><strong class="text-red-600">Admin & Board Pre-Approval Proof:</strong> Attach documentation showing explicit approval from both parties.</li>
-                                         <li>Vendor <strong class="text-red-600">Quote/Invoice</strong> for the requested school payment.</li>
-                                    </ul>
-                                 </li>
-                                 <li><strong>Portal Process:</strong> Submit "New Request" as "School Payment Request". Attach all required documents. Routes first to Admin, then to Board Member for formal approval within the portal.</li>
+                             <ul class="list-disc list-inside text-sm text-slate-700">
+                                 <li><strong>Purpose:</strong> Significant expenses (e.g., major equipment, contracts).</li>
+                                 <li><strong>Pre-Approval:</strong> <strong class="text-red-600">Admin AND designated Board Member approval REQUIRED BEFORE purchase</strong> (via email/written form).</li>
+                                 <li><strong>Payment:</strong> <strong class="text-red-700">School Account ONLY.</strong> No reimbursement allowed.</li>
+                                 <li><strong>Docs:</strong> <strong class="text-red-600">Admin & Board Pre-Approval Proof</strong> + Vendor <strong class="text-red-600">Quote/Invoice</strong>.</li>
+                                 <li><strong>Process:</strong> Submit "School Payment Request" via portal with all docs. Routes to Admin, then Board for final portal approvals.</li>
                             </ul>
                         </div>
 
                          <!-- Over Tier 3 -->
                          <div class="policy-tier border-l-red-600">
                              <h4 class="font-bold text-lg text-red-800">Over $<span class="tier-limit" data-tier="3">5000.00</span></h4>
-                              <p class="text-sm text-slate-700 mt-2">
-                                 Expenses exceeding this threshold require direct Board review and approval outside of this portal. Do not use this form. Please compile detailed justification, multiple quotes (if applicable), and budget impact information, then contact the Board directly via <a href="mailto:bod@svamail.com" class="font-medium text-teal-600 hover:underline">bod@svamail.com</a>.
+                              <p class="text-sm text-slate-700">
+                                 Expenses over $<span class="tier-limit" data-tier="3">5000.00</span> require direct Board review. Do not use this portal. Email <a href="mailto:bod@svamail.com" class="font-medium text-teal-600 hover:underline">bod@svamail.com</a> with justification and quotes.
                              </p>
                          </div>
                      </div>
                 </div>
 
                  <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
-                     <h3 class="text-xl font-semibold text-slate-800 mb-3 flex items-center"><i class="ph-check-square-offset text-blue-600 mr-2 text-2xl"></i> General Guidelines & Procedures</h3>
-                    <ul class="list-disc list-inside text-sm text-slate-600 space-y-3">
-                        <li><strong>Timeliness:</strong> Reimbursement requests for purchases made with personal funds should be submitted via the portal within <strong class="text-indigo-700">30 calendar days</strong> of the purchase date. Late submissions may be denied. Pre-approval requests should be submitted well in advance of the purchase need.</li>
-                        <li><strong>Required Documentation:</strong>
-                            <ul class="list-circle list-inside ml-4 text-xs space-y-1">
-                                <li><strong>Receipts:</strong> Must be clear, legible, itemized, and show vendor name, transaction date, description of items, total amount paid, and proof of payment (e.g., last 4 digits of card, "paid" stamp). Photos or scans are acceptable.</li>
-                                <li><strong>Quotes/Invoices:</strong> Must clearly show vendor details, item/service descriptions, quantities, unit prices, and total cost.</li>
-                                <li><strong>Pre-Approval Proof:</strong> Must be the explicit written confirmation (e.g., forwarded email chain, signed document scan) from the required approver(s).</li>
-                                <li><strong>File Format/Size:</strong> Attachments must be in <strong class="text-indigo-700">PDF, PNG, JPG, or JPEG</strong> format. Each file must be <strong class="text-indigo-700">under 10MB</strong>. Combine multiple receipts/pages into a single PDF if possible.</li>
-                            </ul>
-                        </li>
-                        <li><strong>Approval Workflow:</strong> Requests automatically route based on the tier. Approvers (Admin, Board) receive email notifications and must log in to the portal to approve or reject requests. Approvers should review within <strong class="text-indigo-700">5 business days</strong>. If an approval is delayed beyond 5 days, an Admin may override the pending approval step if necessary.</li>
-                        <li><strong>Payment Processing:</strong> Once a request reaches "Approved" status, the finance department will process the payment. Reimbursements are typically issued via check or direct deposit (if set up) within 1-2 weeks. School account payments are made directly to the vendor. The request status will update to "Check Issued" once payment is processed.</li>
-                        <li><strong>Non-Compliance & Disputes:</strong> Failure to follow the policy (e.g., missing pre-approval, inadequate documentation) may result in processing delays or denial of the request. Disputed decisions should be discussed with the initial approver or escalated to the finance department.</li>
-                         <li><strong>Budget Availability:</strong> All approvals are contingent upon budget availability for the relevant department or category. Pre-approval does not guarantee final payment if budget constraints arise, although this is rare.</li>
+                     <h3 class="text-xl font-semibold text-slate-800 mb-3 flex items-center"><i class="ph-check-square-offset text-blue-600 mr-2 text-2xl"></i> General Guidelines</h3>
+                    <ul class="list-disc list-inside text-sm text-slate-600 space-y-2">
+                        <li><strong>Submission Deadline:</strong> Submit reimbursements within <strong class="text-indigo-700">30 days</strong> of purchase. Submit pre-approvals in advance.</li>
+                        <li><strong>Documentation Standards:</strong> Receipts must be itemized and show vendor, date, amount, and proof of payment. Quotes/Invoices require vendor details, items, and cost. Pre-Approval proof must be written confirmation.</li>
+                        <li><strong>File Requirements:</strong> Attachments must be <strong class="text-indigo-700">PDF, PNG, JPG, or JPEG</strong> and under <strong class="text-indigo-700">10MB each</strong>. Combine pages into one PDF if possible.</li>
+                        <li><strong>Approval Time:</strong> Approvers aim to review within <strong class="text-indigo-700">5 business days</strong>. Admins may override after 5 days if needed.</li>
+                        <li><strong>Payment:</strong> Approved reimbursements paid in 1-2 weeks. School payments made directly to vendor. Status updates to "Check Issued".</li>
+                        <li><strong>Compliance:</strong> Missing pre-approvals or docs may cause delays/denial.</li>
+                         <li><strong>Budget:</strong> Approvals are subject to budget availability.</li>
                     </ul>
                  </div>
             </div>
@@ -730,16 +697,16 @@
 
             if (amount > 0 && amount <= tier1Max) {
                 tier = 1;
-                message = `<strong>Tier 1:</strong> No pre-approval needed for amounts up to ${formatCurrency(tier1Max)}. Requires receipt for reimbursement.`;
+                message = `<strong>Tier 1:</strong> No pre-approval needed. Requires receipt for reimbursement.`; // Made concise
             } else if (amount > tier1Max && amount <= tier2Max) {
                 tier = 2;
-                message = `<strong>Tier 2:</strong> Requires <strong>Admin pre-approval BEFORE purchase</strong>. Attach pre-approval proof and quote (for school payment) or receipt (for reimbursement).`;
+                message = `<strong>Tier 2:</strong> Requires <strong>Admin pre-approval BEFORE purchase</strong>. Attach pre-approval proof + receipt (reimbursement) or quote (school payment).`; // Made concise
             } else if (amount > tier2Max && amount <= tier3Max) {
                 tier = 3;
-                message = `<strong>Tier 3:</strong> Requires <strong>Admin AND Board pre-approval BEFORE purchase</strong>. Payment MUST be made via school account (select School Payment Request). Attach pre-approval proof and quote.`;
+                message = `<strong>Tier 3:</strong> Requires <strong>Admin AND designated Board Member pre-approval BEFORE purchase</strong>. Payment MUST use school account. Attach pre-approval proof + quote.`; // Made concise & updated board approval
             } else if (amount > tier3Max) {
                 tier = 4; // Special case for > Tier 3
-                message = `<strong>Amount exceeds Tier 3 limit (${formatCurrency(tier3Max)})</strong>. This portal cannot be used. Please email <a href="mailto:bod@svamail.com" class="font-medium text-teal-600 hover:underline">bod@svamail.com</a> directly with justification and quotes.`;
+                message = `<strong>Amount exceeds Tier 3 limit (${formatCurrency(tier3Max)})</strong>. Use email for requests over ${formatCurrency(tier3Max)}. Contact <a href="mailto:bod@svamail.com" class="font-medium text-teal-600 hover:underline">bod@svamail.com</a>.`; // Made concise
                 canSubmit = false; // Disable submission
             } else {
                  tierInfoDiv.classList.add('hidden');
@@ -779,6 +746,7 @@
             [receiptInput, quoteInput, preApprovalInput].forEach(input => {input.required = false; input.value = ''; /* Clear file input */ }); // Clear previous selection
             paymentMethodContainer.classList.add('hidden');
             paymentMethodSelect.required = false;
+            paymentMethodSelect.disabled = false; // Ensure enabled by default
 
 
             if (tier === 0 || tier === 4) return; // Exit if invalid tier
@@ -793,24 +761,21 @@
             // Determine required attachments based on tier and request type
             if (requestType === 'reimbursement') {
                 needsReceipt = true;
-                if (tier === 2 || tier === 3) {
+                if (tier === 2 || tier === 3) { // Tier 3 Technically not allowed, but keep logic for safety
                     needsPreApprovalDoc = true;
                 }
-                 // Enforce payment method for reimbursement
+                 // Enforce payment method for reimbursement, but DO NOT disable
                  paymentMethodSelect.value = 'Personal Funds';
-                 paymentMethodSelect.disabled = true; // Lock it for reimbursement
+
 
             } else if (requestType === 'preapproval') { // Covers both Pre-Approval and School Payment Request scenarios
                 needsQuote = true;
                  if (tier === 2 || tier === 3) {
-                     // For pre-approval requests, the pre-approval doc is generated *after*, so it's not required *during* submission
-                     // Let's assume preApproval is needed *if* this submission is for the actual payment *after* pre-approval.
-                     // The logic might need refinement based on exact workflow.
+                     // Attach pre-approval ONLY if this is the request *after* getting initial email approval
                      // Let's make it required for Tier 2/3 school payment request.
                      needsPreApprovalDoc = true;
                  }
                  // Allow selecting payment method, but enforce School Account for Tier 3
-                 paymentMethodSelect.disabled = false;
                  if (tier === 3) {
                       paymentMethodSelect.value = 'School Account';
                       paymentMethodSelect.disabled = true; // Lock Tier 3 to School Account
@@ -819,7 +784,6 @@
                 // If request type is not selected, hide payment method and files
                  paymentMethodContainer.classList.add('hidden');
                  paymentMethodSelect.required = false;
-                 paymentMethodSelect.disabled = false; // Ensure it's not disabled if hidden
             }
 
 
